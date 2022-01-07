@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Adventures\LaravelBokun\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class LaravelBokunCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'laravel-bokun';
 
     public $description = 'My command';
 
