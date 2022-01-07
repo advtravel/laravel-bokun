@@ -135,9 +135,9 @@ trait AnswersBokunAppstoreRequests
 
         return new AccessTokenResponse(
             $response_data['access_token'],
-            $response['appInstalledByUserFirstName'] . ' ' . $response['appInstalledByUserLastName'],
-            $response['appInstalledByUserEmail'],
-            (int) $this->parseB64ID($response['vendor_id'])['Vendor'],
+            $response_data['appInstalledByUserFirstName'] . ' ' . $response_data['appInstalledByUserLastName'],
+            $response_data['appInstalledByUserEmail'],
+            (int) $this->parseB64ID($response_data['vendor_id'])['Vendor'],
             $domain
         );
     }
