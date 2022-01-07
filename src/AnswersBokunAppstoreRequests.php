@@ -10,7 +10,7 @@ trait AnswersBokunAppstoreRequests
 {
     use MakesBokunRequests;
 
-    private $nonce_session_key = 'bokun_appstore_nonce';
+    private static $nonce_session_key = 'bokun_appstore_nonce';
 
     public function initialRequest(Request $request)
     {
