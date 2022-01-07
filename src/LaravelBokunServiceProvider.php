@@ -16,10 +16,6 @@ class LaravelBokunServiceProvider extends PackageServiceProvider
          * More info: https://github.com/spatie/laravel-package-tools
          */
         $package
-            ->name('laravel-bokun')
-            ->hasConfigFile()
-            ->hasViews()
-            ->hasMigration('create_laravel-bokun_table')
-            ->hasCommand(LaravelBokunCommand::class);
+            ->name('laravel-bokun');
     }
 }
