@@ -37,7 +37,7 @@ trait AnswersBokunAppstoreRequests
             . http_build_query([
                 'client_id' => $this->getAppConfig()->app_id,
                 'scope' => config('bokun.scope'),
-                'redirect_url' => $redirect_url,
+                'redirect_uri' => $redirect_url,
                 'state' => $nonce,
             ]);
 
