@@ -10,19 +10,6 @@ You can install the package via composer:
 composer require advtravel/laravel-bokun
 ```
 
-You can publish the config file with:
-
-```bash
-php artisan vendor:publish --tag="laravel-bokun-config"
-```
-
-This is the contents of the published config file:
-
-```php
-return [
-];
-```
-
 ## Usage
 
 ```php
