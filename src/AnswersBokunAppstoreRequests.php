@@ -106,7 +106,7 @@ trait AnswersBokunAppstoreRequests
 
         $query_to_verify = $this->buildQuery($query);
 
-        $hash = hash_hmac('sha256', $query_to_verify, $this->api_secret, false);
+        $hash = hash_hmac('sha256', $query_to_verify, $this->getAppConfig()->app_secret, false);
 
         return $hash === $hmac;
     }
