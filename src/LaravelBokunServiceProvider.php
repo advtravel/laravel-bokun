@@ -2,9 +2,9 @@
 
 namespace Adventures\LaravelBokun;
 
+use Adventures\LaravelBokun\Commands\LaravelBokunCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Adventures\LaravelBokun\Commands\LaravelBokunCommand;
 
 class LaravelBokunServiceProvider extends PackageServiceProvider
 {

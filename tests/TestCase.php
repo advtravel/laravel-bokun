@@ -2,9 +2,9 @@
 
 namespace Adventures\LaravelBokun\Tests;
 
+use Adventures\LaravelBokun\LaravelBokunServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Adventures\LaravelBokun\LaravelBokunServiceProvider;
 
 class TestCase extends Orchestra
 {

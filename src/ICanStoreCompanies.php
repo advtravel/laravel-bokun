@@ -2,4 +2,6 @@
 
 namespace Adventures\LaravelBokun;
 
-interface ICanStoreCompanies {}
+interface ICanStoreCompanies
+{
+}
