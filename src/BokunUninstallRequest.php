@@ -12,9 +12,9 @@ class BokunUninstallRequest extends Request
 
         // Walk over headers, convert all keys to strtolower, filter by those without x-bokun
         $headers = [];
-        foreach($all_headers as $key => $value) {
+        foreach ($all_headers as $key => $value) {
             $key = strtolower($key);
-            if (!str_starts_with($key, 'x-bokun')) {
+            if (! str_starts_with($key, 'x-bokun')) {
                 continue;
             }
             $headers[$key] = $value;

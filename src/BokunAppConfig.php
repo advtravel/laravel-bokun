@@ -10,5 +10,6 @@ class BokunAppConfig
         public string $scope,
         public string $base_url,
         public string $oauth_redirect_url,
-    ) {}
+    ) {
+    }
 }

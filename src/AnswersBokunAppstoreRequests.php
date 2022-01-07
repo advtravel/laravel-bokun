@@ -11,7 +11,7 @@ trait AnswersBokunAppstoreRequests
     use MakesBokunRequests;
 
     private $nonce_session_key = 'bokun_appstore_nonce';
-   
+
     public function initialRequest(Request $request)
     {
         $config = $this->getAppConfig($request);
@@ -40,6 +40,7 @@ trait AnswersBokunAppstoreRequests
                 'redirect_url' => $redirect_url,
                 'state' => $nonce,
             ]);
+
         return redirect($bokunUrl);
     }
 
@@ -68,21 +69,25 @@ trait AnswersBokunAppstoreRequests
      * Like http_build_query but only accepts a flat input array as parameter
      * And nothing is encoded. This is how Bókun builds the query for HMAC validation
      */
-    private function buildQuery(array $query): string {
-        if (!count($query)) return '';
+    private function buildQuery(array $query): string
+    {
+        if (! count($query)) {
+            return '';
+        }
         $return = '';
-        foreach($query as $key => $value) {
+        foreach ($query as $key => $value) {
             if ($return) {
                 $return .= '&';
             }
             $return .= $key . '=' . $value;
         }
+
         return $return;
     }
 
     private function nonceIsValid(array $query): bool
     {
-        if (!array_key_exists('state', $query)) {
+        if (! array_key_exists('state', $query)) {
             return false;
         }
 
@@ -91,7 +96,7 @@ trait AnswersBokunAppstoreRequests
 
     private function hmacIsvalid(array $query, string $key = 'hmac'): bool
     {
-        if (!array_key_exists($key, $query)) {
+        if (! array_key_exists($key, $query)) {
             return false;
         }
 
@@ -100,7 +105,7 @@ trait AnswersBokunAppstoreRequests
         ksort($query);
 
         $query_to_verify = $this->buildQuery($query);
-        
+
         $hash = hash_hmac('sha256', $query_to_verify, $this->api_secret, false);
 
         return $hash === $hmac;
@@ -113,15 +118,14 @@ trait AnswersBokunAppstoreRequests
         $bokunUrl =
             $this->bokunBaseURL($domain)
             . '/appstore/oauth/access_token';
-            
-        try {
 
+        try {
             $response = $client->post($bokunUrl, [
                 'json' => [
                     'client_id' => $this->getAppConfig()->app_id,
                     'client_secret' => $this->getAppConfig()->app_secret,
-                    'code' => $code
-                ]
+                    'code' => $code,
+                ],
             ])->getBody();
 
             $response_data = json_decode($response, associative: true, flags: JSON_THROW_ON_ERROR);
@@ -137,5 +141,4 @@ trait AnswersBokunAppstoreRequests
             $domain
         );
     }
-
 }
