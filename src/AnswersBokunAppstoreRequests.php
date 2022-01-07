@@ -35,7 +35,7 @@ trait AnswersBokunAppstoreRequests
             $this->bokunBaseURL($request->query('domain'))
             . '/appstore/oauth/authorize?'
             . http_build_query([
-                'client_id' => $this->api_id,
+                'client_id' => $this->app_id,
                 'scope' => config('bokun.scope'),
                 'redirect_url' => $redirect_url,
                 'state' => $nonce,
