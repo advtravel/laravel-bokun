@@ -35,7 +35,7 @@ trait MakesBokunRequests
 
     private function bokunBaseURL(string $domain): string
     {
-        return 'https://' . sprintf($this->getAppConfig()->domain, $domain);
+        return 'https://' . sprintf($this->getAppConfig()->base_url, $domain);
     }
 
     private function parseB64ID(string $base64id): array
