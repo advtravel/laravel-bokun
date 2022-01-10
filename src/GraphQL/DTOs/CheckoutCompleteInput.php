@@ -9,7 +9,6 @@ class CheckoutCompleteInput extends DTO
         public CheckoutPaymentInput $payment,
         public bool $sendNotificationToCustomer = false,
         public ?string $externalReference = null,
-    )
-    {   
+    ) {
     }
 }

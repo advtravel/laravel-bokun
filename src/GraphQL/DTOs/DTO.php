@@ -36,24 +36,27 @@ abstract class DTO
 
             $data[$name] = $value;
         }
+
         return $data;
     }
+
     public function __toString(): string
     {
         $lines = [];
-        foreach($this->toArray() as $key => $value) {
-            if (!preg_match('/^[a-zA-Z_]+$/', $key)) {
+        foreach ($this->toArray() as $key => $value) {
+            if (! preg_match('/^[a-zA-Z_]+$/', $key)) {
                 throw new InvalidArgumentException("$key contains invalid characters as a GraphQL key.");
             }
-            $encodeArray = function(array $input) use (&$encode) {
+            $encodeArray = function (array $input) use (&$encode) {
                 $output = [];
-                foreach($input as $item) {
+                foreach ($input as $item) {
                     $output[] = $encode($item);
                 }
+
                 return '[ ' . implode(', ', $output) . ' ]';
             };
-            $encode = function($value) use (&$encode, &$encodeArray) {
-                return match(gettype($value)) {
+            $encode = function ($value) use (&$encode, &$encodeArray) {
+                return match (gettype($value)) {
                     "object" => (string) $value,
                     "array" => $encodeArray($value),
                     "boolean" => $value ? 'true' : 'false',
@@ -62,18 +65,19 @@ abstract class DTO
             };
             $lines[] = $key . ': ' . $encode($value);
         }
+
         return '{ ' . implode(', ', $lines) . ' }';
     }
 
     private function encode(mixed $input, ?string $name = null): string|int|array|null|self|bool|float
     {
-        $isId = !is_null($name) && str_ends_with($name, 'Id');
+        $isId = ! is_null($name) && str_ends_with($name, 'Id');
 
         if (is_null($input) || is_string($input) || is_float($input) || is_bool($input)) {
             return $input;
         }
-        
-        if (is_int($input) && !$isId) {
+
+        if (is_int($input) && ! $isId) {
             return $input;
         }
 
@@ -84,14 +88,15 @@ abstract class DTO
         if (is_int($input) && $isId) {
             // experienceBookingId => ExperienceBooking
             $class = ucfirst(substr($name, 0, -2));
-            
+
             return BokunHelpers::toID($class, $input);
         }
 
         if (is_array($input)) {
-            foreach($input as $k => $v) {
+            foreach ($input as $k => $v) {
                 $input[$k] = $this->encode($v);
             }
+
             return $input;
         }
 

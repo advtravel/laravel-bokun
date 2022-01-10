@@ -10,7 +10,6 @@ class CheckoutCreateInput extends DTO
     public function __construct(
         public array $experiences,
         public ?string $email = null,
-    )
-    {
+    ) {
     }
 }

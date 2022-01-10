@@ -15,8 +15,7 @@ class CheckoutCompleteMutation extends Mutation
     {
         return [
             'id' => 'string',
-            'input' => CheckoutCompleteInput::class
+            'input' => CheckoutCompleteInput::class,
         ];
     }
-
 }

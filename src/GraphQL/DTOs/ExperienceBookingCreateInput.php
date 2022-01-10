@@ -15,7 +15,6 @@ class ExperienceBookingCreateInput extends DTO
         public array $passengers,
         public ?int $pickupPlaceId = null,
         public ?int $dropoffPlaceId = null,
-    )
-    {
+    ) {
     }
 }

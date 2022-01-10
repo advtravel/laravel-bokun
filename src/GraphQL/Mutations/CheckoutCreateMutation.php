@@ -14,7 +14,7 @@ class CheckoutCreateMutation extends Mutation
     public function getValidInputs(): array
     {
         return [
-            'input' => CheckoutCreateInput::class
+            'input' => CheckoutCreateInput::class,
         ];
     }
 }

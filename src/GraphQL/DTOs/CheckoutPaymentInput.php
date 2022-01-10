@@ -8,7 +8,6 @@ class CheckoutPaymentInput extends DTO
         public float $amount,
         public ?string $currencyCode = null,
         public ?string $identifier = null,
-    )
-    {
+    ) {
     }
 }

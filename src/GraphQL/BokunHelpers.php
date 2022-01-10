@@ -16,5 +16,4 @@ class BokunHelpers
     {
         return base64_encode($key . ':' . $value);
     }
-
 }

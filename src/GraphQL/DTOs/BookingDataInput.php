@@ -10,6 +10,6 @@ class BookingDataInput extends DTO
     public function __construct(
         public CustomerInput $customer,
         public array $experienceBookingData
-    ) {  
+    ) {
     }
 }

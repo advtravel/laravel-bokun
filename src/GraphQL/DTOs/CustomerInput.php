@@ -9,7 +9,6 @@ class CustomerInput extends DTO
         public string $lastName,
         public string $emailAddress,
         public ?string $phoneNumber = null
-    )
-    {
+    ) {
     }
 }

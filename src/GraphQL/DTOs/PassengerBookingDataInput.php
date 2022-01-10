@@ -7,7 +7,6 @@ class PassengerBookingDataInput extends DTO
     public function __construct(
         public int $bookingId,
         public CustomerInput $passenger,
-    )
-    {
+    ) {
     }
 }
