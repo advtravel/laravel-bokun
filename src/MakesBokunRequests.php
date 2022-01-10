@@ -40,12 +40,4 @@ trait MakesBokunRequests
     {
         return 'https://' . sprintf($this->getAppConfig()->base_url, $domain);
     }
-
-    private function parseB64ID(string $base64id): array
-    {
-        $text = base64_decode($base64id);
-        [$key, $value] = explode(':', $text, 2);
-
-        return [$key => $value];
-    }
 }

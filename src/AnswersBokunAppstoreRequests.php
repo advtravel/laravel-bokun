@@ -2,6 +2,7 @@
 
 namespace Adventures\LaravelBokun;
 
+use Adventures\LaravelBokun\GraphQL\BokunHelpers;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Throwable;
@@ -62,7 +63,7 @@ trait AnswersBokunAppstoreRequests
 
         abort_unless($bokunHeaders['x-bokun-topic'] === 'apps/uninstall', 501, 'This endpoint only handles apps/uninstall calls');
 
-        return (int) $this->parseB64ID($bokunHeaders['x-bokun-vendor-id'])['Vendor'];
+        return BokunHelpers::parseID($bokunHeaders['x-bokun-vendor-id'])['Vendor'];
     }
 
     /**
@@ -137,7 +138,7 @@ trait AnswersBokunAppstoreRequests
             $response_data['access_token'],
             $response_data['appInstalledByUserFirstName'] . ' ' . $response_data['appInstalledByUserLastName'],
             $response_data['appInstalledByUserEmail'],
-            (int) $this->parseB64ID($response_data['vendor_id'])['Vendor'],
+            BokunHelpers::parseID($response_data['vendor_id'])['Vendor'],
             $domain
         );
     }
