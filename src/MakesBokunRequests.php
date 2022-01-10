@@ -26,6 +26,9 @@ trait MakesBokunRequests
 
         $response = json_decode($response, associative: true, flags: JSON_THROW_ON_ERROR);
 
+        if (isset($response['errors'])) {
+            throw new RuntimeException("Bókun error message: " . ($response['errors'][0]['message'] ?? json_encode($response['errors'])));
+        }
         if (! isset($response['data'])) {
             throw new RuntimeException("No data in Bókun response");
         }
