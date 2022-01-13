@@ -2,12 +2,10 @@
 
 namespace Adventures\LaravelBokun\GraphQL;
 
-use Adventures\LaravelBokun\GraphQL\SerializesGraphQLInputList;
 use InvalidArgumentException;
 
 abstract class Query
 {
-
     protected array $arguments = [];
 
     public function __construct(
@@ -44,6 +42,7 @@ abstract class Query
     public function __toString(): string
     {
         $input = $this->serializeInputString($this->arguments);
+
         return $this->getName() . ' ( ' . $input . ' ) { ' . $this->fields . ' }';
     }
 
@@ -56,6 +55,7 @@ abstract class Query
             }
             $arguments[] = $name . ': ' . (string) $value;
         }
+
         return implode(',', $arguments);
     }
 }

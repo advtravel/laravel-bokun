@@ -11,8 +11,6 @@ class ExperienceBooking extends DTO
         public string $zonedStartDate,
         public int $totalPassengerCount,
         public int $totalSeatsOccupied,
-    )
-    {
-        
+    ) {
     }
 }

@@ -5,7 +5,6 @@ namespace Adventures\LaravelBokun\GraphQL\Queries;
 use Adventures\LaravelBokun\GraphQL\DTOs\ExperienceFilterInput;
 use Adventures\LaravelBokun\GraphQL\DTOs\ExperienceSortInput;
 use Adventures\LaravelBokun\GraphQL\PagedQuery;
-use Adventures\LaravelBokun\GraphQL\Query;
 
 class ListExperiencesQuery extends PagedQuery
 {
@@ -18,7 +17,7 @@ class ListExperiencesQuery extends PagedQuery
     {
         return [
             'sort' => ExperienceSortInput::class,
-            'filter' => ExperienceFilterInput::class
+            'filter' => ExperienceFilterInput::class,
         ] + parent::pagedValidInputs();
     }
 }

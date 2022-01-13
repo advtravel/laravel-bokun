@@ -3,7 +3,6 @@
 namespace Adventures\LaravelBokun\GraphQL;
 
 use Adventures\LaravelBokun\BokunAppConfig;
-use Adventures\LaravelBokun\GraphQL\Query;
 use Adventures\LaravelBokun\MakesBokunRequests;
 use Iterator;
 use RuntimeException;
@@ -34,6 +33,7 @@ class Connection
 
         return $interestingData;
     }
+
     public function executeMutation(Query $mutation): array
     {
         return $this->execute($mutation, 'mutation');
@@ -52,7 +52,7 @@ class Connection
             $hasNextPage = $result['pageInfo']['hasNextPage'];
             $query->withArgument('after', $result['pageInfo']['endCursor']);
 
-            foreach($result['edges'] as $edge) {
+            foreach ($result['edges'] as $edge) {
                 yield $edge['node'];
             }
         } while ($hasNextPage);

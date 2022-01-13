@@ -23,7 +23,7 @@ class ExperienceBookingCreateInput extends DTO
         if ($name === 'dateTimestamp') {
             return ['date' => date('Y-m-d', $value)];
         }
-        
+
         $fields = parent::encodeSpecialFields($name, $value);
 
         if ($name === 'pickupPlaceId') {
@@ -34,6 +34,5 @@ class ExperienceBookingCreateInput extends DTO
         }
 
         return $fields;
-
     }
 }

@@ -15,7 +15,7 @@ class GetExperienceScheduleQuery extends PagedQuery
     public function getValidInputs(): array
     {
         return [
-            'filter' => ScheduleFilterInput::class
+            'filter' => ScheduleFilterInput::class,
         ] + parent::pagedValidInputs();
     }
 }

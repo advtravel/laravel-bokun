@@ -16,8 +16,7 @@ abstract class PagedQuery extends Query
 
     public function __construct(
         string $fields
-    )
-    {
+    ) {
         $fields = 'pageInfo { hasNextPage, endCursor }, edges { node { ' . $fields . ' } } ';
         parent::__construct($fields);
     }
