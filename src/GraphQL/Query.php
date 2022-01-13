@@ -21,9 +21,10 @@ abstract class Query
 
         $type = $this->getValidInputs()[$name];
 
-        if (! ((gettype($value) === $type) || (is_a($value, $type)))) {
+        if (! ((gettype($value) === $type) || (is_object($value) && is_a($value, $type)))) {
             $foundType = gettype($value);
             if ($foundType === 'object') {
+                /** @var object $value */
                 $foundType = get_class($value);
             }
 

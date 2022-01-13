@@ -25,6 +25,7 @@ trait MakesBokunRequests
         ])->getBody();
 
         $response = json_decode($response, associative: true, flags: JSON_THROW_ON_ERROR);
+        /** @var array $response */
 
         if (isset($response['errors'])) {
             throw new RuntimeException("Bókun error message: " . ($response['errors'][0]['message'] ?? json_encode($response['errors'])));

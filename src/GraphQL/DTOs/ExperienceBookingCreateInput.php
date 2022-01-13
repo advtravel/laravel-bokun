@@ -21,6 +21,7 @@ class ExperienceBookingCreateInput extends DTO
     protected function encodeSpecialFields(string $name, mixed $value): array
     {
         if ($name === 'dateTimestamp') {
+            /** @var int $value */
             return ['date' => date('Y-m-d', $value)];
         }
 

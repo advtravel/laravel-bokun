@@ -6,6 +6,7 @@ use Adventures\LaravelBokun\ArrayOf;
 use Adventures\LaravelBokun\GraphQL\BokunHelpers;
 use InvalidArgumentException;
 use ReflectionClass;
+use ReflectionNamedType;
 use ReflectionObject;
 use ReflectionProperty;
 use RuntimeException;
@@ -118,15 +119,17 @@ abstract class DTO
             if (! preg_match('/^[a-zA-Z_]+$/', $key)) {
                 throw new InvalidArgumentException("$key contains invalid characters as a GraphQL key.");
             }
+            /** @var \Closure $encode */
             $encodeArray = function (array $input) use (&$encode) {
                 $output = [];
                 foreach ($input as $item) {
+                    // @phpstan-ignore-next-line
                     $output[] = $encode($item);
                 }
 
                 return '[ ' . implode(', ', $output) . ' ]';
             };
-            $encode = function ($value) use (&$encode, &$encodeArray) {
+            $encode = function ($value) use (&$encodeArray) {
                 return match (gettype($value)) {
                     "object" => (string) $value,
                     "array" => $encodeArray($value),
@@ -205,6 +208,9 @@ abstract class DTO
         foreach ($self->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
             $name = $property->name;
             $type = $property->getType();
+            if (!$type instanceof ReflectionNamedType) {
+                throw new RuntimeException("Property $name needs to have a type. Union types and intersection types are not supported.");
+            }
 
             if (! array_key_exists($name, $processed)) {
                 if (! $type->allowsNull()) {
@@ -215,7 +221,7 @@ abstract class DTO
                 continue;
             }
 
-            $type = (string) $type;
+            $type = $type->getName();
             if (is_subclass_of($type, self::class)) {
                 $arguments[$name] = $type::fromArray($processed[$name]);
             } elseif (is_array($processed[$name])) {
@@ -230,6 +236,9 @@ abstract class DTO
             }
         }
 
+        // https://phpstan.org/blog/solving-phpstan-error-unsafe-usage-of-new-static
+        // We ignore the error since we know exactly what we're doing
+        // @phpstan-ignore-next-line
         return new static(...$arguments);
     }
 }
