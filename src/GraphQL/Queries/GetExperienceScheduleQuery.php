@@ -3,9 +3,9 @@
 namespace Adventures\LaravelBokun\GraphQL\Queries;
 
 use Adventures\LaravelBokun\GraphQL\DTOs\ScheduleFilterInput;
-use Adventures\LaravelBokun\GraphQL\PagedQuery;
+use Adventures\LaravelBokun\GraphQL\Query;
 
-class GetExperienceScheduleQuery extends PagedQuery
+class GetExperienceScheduleQuery extends Query
 {
     public function getName(): string
     {
@@ -16,6 +16,6 @@ class GetExperienceScheduleQuery extends PagedQuery
     {
         return [
             'filter' => ScheduleFilterInput::class,
-        ] + parent::pagedValidInputs();
+        ];
     }
 }
