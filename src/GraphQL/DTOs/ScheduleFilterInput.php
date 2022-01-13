@@ -4,6 +4,8 @@ namespace Adventures\LaravelBokun\GraphQL\DTOs;
 
 class ScheduleFilterInput extends DTO
 {
+    public const DATETIME_FORMAT = 'Y-m-d\\TH:m:s';
+
     /**
      * @param string $dateTimeFrom yyyy-MM-ddTHH:mm:ss
      * @param string $dateTimeTo   yyyy-MM-ddTHH:mm:ss
