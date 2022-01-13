@@ -52,9 +52,9 @@ abstract class DTO
             $class = ucfirst(substr($name, 0, -3));
             // experienceBookingIds => ExperienceBooking
 
-            return collect($value)->map(
+            return [$name => collect($value)->map(
                 fn ($v) => BokunHelpers::toID($class, $v)
-            )->toArray();
+            )->toArray()];
         }
 
         return [$name => $value];
