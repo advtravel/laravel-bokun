@@ -2,7 +2,9 @@
 
 namespace Adventures\LaravelBokun\GraphQL\Mutations;
 
-class CheckoutReserveMutation extends Mutation
+use Adventures\LaravelBokun\GraphQL\Query;
+
+class CheckoutReserveMutation extends Query
 {
     public function getName(): string
     {

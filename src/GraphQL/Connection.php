@@ -3,8 +3,9 @@
 namespace Adventures\LaravelBokun\GraphQL;
 
 use Adventures\LaravelBokun\BokunAppConfig;
-use Adventures\LaravelBokun\GraphQL\Mutations\Mutation;
+use Adventures\LaravelBokun\GraphQL\Query;
 use Adventures\LaravelBokun\MakesBokunRequests;
+use Iterator;
 use RuntimeException;
 
 class Connection
@@ -22,15 +23,38 @@ class Connection
         return $this->app_config;
     }
 
-    public function executeMutation(Mutation $mutation): array
+    protected function execute(Query $query, string $verb): array
     {
-        $data = $this->makeRequest('mutation { ' . $mutation . ' }', $this->access_token);
+        $data = $this->makeRequest($verb . ' { ' . $query . ' }', $this->access_token);
         if (isset($data['error'])) {
             throw new RuntimeException("Bókun GraphQL error: " . json_encode($data['error'], JSON_PRETTY_PRINT));
         }
-        $interestingData = $data[$mutation->getName()]
-            ?? throw new RuntimeException("Didn't find expected data in mutation return");
+        $interestingData = $data[$query->getName()]
+            ?? throw new RuntimeException("Didn't find expected data in $verb return");
 
         return $interestingData;
+    }
+    public function executeMutation(Query $mutation): array
+    {
+        return $this->execute($mutation, 'mutation');
+    }
+
+    public function executeQuery(Query $query): array
+    {
+        return $this->execute($query, 'query');
+    }
+
+    public function executePagedQuery(PagedQuery $query): Iterator
+    {
+        $hasNextPage = false;
+        do {
+            $result = $this->executeQuery($query);
+            $hasNextPage = $result['pageInfo']['hasNextPage'];
+            $query->withArgument('after', $result['pageInfo']['endCursor']);
+
+            foreach($result['edges'] as $edge) {
+                yield $edge['node'];
+            }
+        } while ($hasNextPage);
     }
 }

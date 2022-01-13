@@ -3,8 +3,9 @@
 namespace Adventures\LaravelBokun\GraphQL\Mutations;
 
 use Adventures\LaravelBokun\GraphQL\DTOs\CheckoutCreateInput;
+use Adventures\LaravelBokun\GraphQL\Query;
 
-class CheckoutCreateMutation extends Mutation
+class CheckoutCreateMutation extends Query
 {
     public function getName(): string
     {

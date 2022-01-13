@@ -2,44 +2,114 @@
 
 namespace Adventures\LaravelBokun\GraphQL\DTOs;
 
+use Adventures\LaravelBokun\ArrayOf;
 use Adventures\LaravelBokun\GraphQL\BokunHelpers;
 use InvalidArgumentException;
+use ReflectionClass;
 use ReflectionObject;
 use ReflectionProperty;
+use RuntimeException;
 
 abstract class DTO
 {
+
+    /**
+     * Is a given property name an id that needs to be B64 encoded to Bókun?
+     * 
+     * Recognized formats:
+     * - ExperienceStartTime::ExperienceId = 42 => Experience:42
+     * - ExperienceStartTime::id = 42 => ExperienceStartTime:42
+     * - Experience::experienceStartTimeIds = [42] => [ExperienceStartTime:42]
+     */
+    protected static function isId(string $name): bool
+    {
+        return ($name === 'id') || str_ends_with($name, 'Id') || str_ends_with($name, 'Ids');
+    }
+
+    /**
+     * Mapping of fields from PHP -> GraphQL for fields that are different
+     * 
+     * This function takes care of IDs, derived classes can extend it.
+     */
+    protected function encodeSpecialFields(string $name, mixed $value): array
+    {
+        $isId = self::isId($name);
+
+        if (is_int($value) && $isId) {
+            if ($name === 'id') {
+                // Experience::id => Experience
+                $reflection = new ReflectionClass($this);
+                $class = $reflection->getShortName();
+            } else {
+                // experienceBookingId => ExperienceBooking
+                $class = ucfirst(substr($name, 0, -2));
+            }
+
+            return [$name => BokunHelpers::toID($class, $value)];
+        }
+
+        if (is_array($value) && $isId) {
+            $class = ucfirst(substr($name, 0, -3));
+            // experienceBookingIds => ExperienceBooking
+
+            return collect($value)->map(
+                fn($v) => BokunHelpers::toID($class, $v)
+            )->toArray();
+        }
+
+        return [$name => $value];
+    }
+
+    /**
+     * Mapping of fields from GraphQL -> PHP
+     * 
+     * This is the counterpart to encodeSpecialFields.
+     * It's static because creation of an object is done in a static
+     * context, e.g. Experience::fromArray(array $GraphQLResponse)
+     */
+    protected static function decodeSpecialFields(string $name, mixed $value): array
+    {
+        if (!self::isId($name)) {
+            return [$name => $value];
+        }
+
+        if (is_string($value)) {
+            $id = array_values(BokunHelpers::parseID($value))[0];
+            return [$name => $id];
+        }
+
+        if (is_array($value)) {
+            $ids = [];
+            foreach($value as $v) {
+                $ids[] = array_values(BokunHelpers::parseID($v))[0];
+            }
+            return [$name => $ids];
+        }
+
+        throw new RuntimeException("a field that's an ID has to be string or array in API return.");
+    }
+
+    /**
+     * Encodes this DTO into an array suitable for the Bókun GraphQL API
+     */
     public function toArray(): array
     {
         $data = [];
         $rothis = new ReflectionObject($this);
         foreach ($rothis->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
             $name = $property->name;
-            $value = $this->encode($property->getValue($this), $name);
-
-            // Special cases where we encode something in PHP differently from the API
-            if ($name === 'dateTimestamp') {
-                $name = 'date';
-                $value = date('Y-m-d', $value);
-            }
-            if ($name === 'pickupPlaceId') {
-                $data['pickup'] = true;
-            }
-            if ($name === 'dropoffPlaceId') {
-                $data['dropoff'] = true;
-            }
-
-            // Optional properties
-            if (is_null($value)) {
-                continue;
-            }
-
-            $data[$name] = $value;
+            $value = $property->getValue($this);
+            $processed = $this->encodeSpecialFields($name, $value);
+            $processed = array_filter($processed, fn($v) => !is_null($v));
+            $data = $processed + $data;
         }
 
         return $data;
     }
 
+    /** 
+     * Serializes the toArray() representation of this object into a GraphQL string
+     */
     public function __toString(): string
     {
         $lines = [];
@@ -69,38 +139,93 @@ abstract class DTO
         return '{ ' . implode(', ', $lines) . ' }';
     }
 
-    private function encode(mixed $input, ?string $name = null): string|int|array|null|self|bool|float
+    /**
+     * For a property that has the #[ArrayOf] attribute, return the classname
+     * that this is an array of.
+     */
+    private static function getArrayOfType(ReflectionProperty $property): string
     {
-        $isId = ! is_null($name) && str_ends_with($name, 'Id');
-
-        if (is_null($input) || is_string($input) || is_float($input) || is_bool($input)) {
-            return $input;
+        $attributes = $property->getAttributes(ArrayOf::class);
+        if (count($attributes) !== 1) {
+            throw new RuntimeException("Can't serialize an array into fields without #[ArrayOf(abc::class)].");
         }
+        $attribute = $attributes[0]->newInstance();
+        return $attribute->getClassName();
+    }
 
-        if (is_int($input) && ! $isId) {
-            return $input;
-        }
-
-        if ($input instanceof self) {
-            return $input;
-        }
-
-        if (is_int($input) && $isId) {
-            // experienceBookingId => ExperienceBooking
-            $class = ucfirst(substr($name, 0, -2));
-
-            return BokunHelpers::toID($class, $input);
-        }
-
-        if (is_array($input)) {
-            foreach ($input as $k => $v) {
-                $input[$k] = $this->encode($v);
+    /**
+     * List all properties (recursively) of this DTO so that they can be used
+     * as a list of fields to retrieve from the Bókun GraphQL API.
+     * Works very well with the ::fromArray() method as the result of a query
+     * constructed by this method can directly be used to construct the DTOs
+     * for the results.
+     */
+    public static function listFieldsForQuery(): string
+    {
+        $data = [];
+        $self = new ReflectionClass(static::class);
+        foreach ($self->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
+            $name = $property->name;
+            $type = (string) $property->getType();
+            $string_representation = $name;
+            if (is_subclass_of($type, self::class)) {
+                $string_representation =
+                    $name . ' { ' . $type::listFieldsForQuery() . ' }';
+            } elseif (($type === 'array') || ($type === '?array')) {
+                $arrayOf = self::getArrayOfType($property);
+                $fields = $arrayOf::listFieldsForQuery();
+                $string_representation =
+                    $name . ' { ' . $fields . ' }';
             }
 
-            return $input;
+            $data[] = $string_representation;
+        }
+        return implode(', ', $data);
+    }
+
+    /**
+     * Constructs a DTO from an array. Properties that are DTOs again itself
+     * are treated correctly, just like arrays of properties.
+     * Can't deal with arrays of scalars currently, haven't seen them in the
+     * Bókun API so far anyways.
+     */
+    
+    public static function fromArray(array $data): static
+    {
+        $arguments = [];
+        $self = new ReflectionClass(static::class);
+
+        $processed = [];
+        foreach($data as $name => $value) {
+            $processed = static::decodeSpecialFields($name, $value) + $processed;
         }
 
+        foreach($self->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
+            $name = $property->name;
+            $type = $property->getType();
 
-        throw new InvalidArgumentException("Can't encode input: " . json_encode($input));
+            if (!array_key_exists($name, $processed)) {
+                if (!$type->allowsNull()) {
+                    throw new RuntimeException("Property $name needs to be filled but not present in data");
+                }
+                $arguments[$name] = null;
+                continue;
+            }
+
+            $type = (string) $type;
+            if (is_subclass_of($type, self::class)) {
+                $arguments[$name] = $type::fromArray($processed[$name]);
+            } elseif (is_array($processed[$name])) {
+                $arrayOf = self::getArrayOfType($property);
+                $arguments[$name] = [];
+                foreach($processed[$name] as $item) {
+                    $arguments[$name][] = $arrayOf::fromArray($item);
+                }
+            } else {
+                $arguments[$name] = $processed[$name];
+                settype($arguments[$name], $type);
+            }
+        }
+        return new static(...$arguments);
     }
 }

@@ -17,4 +17,23 @@ class ExperienceBookingCreateInput extends DTO
         public ?int $dropoffPlaceId = null,
     ) {
     }
+
+    protected function encodeSpecialFields(string $name, mixed $value): array
+    {
+        if ($name === 'dateTimestamp') {
+            return ['date' => date('Y-m-d', $value)];
+        }
+        
+        $fields = parent::encodeSpecialFields($name, $value);
+
+        if ($name === 'pickupPlaceId') {
+            $fields['pickup'] = true;
+        }
+        if ($name === 'dropoffPlaceId') {
+            $fields['dropoff'] = true;
+        }
+
+        return $fields;
+
+    }
 }

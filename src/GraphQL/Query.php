@@ -1,12 +1,14 @@
 <?php
 
-namespace Adventures\LaravelBokun\GraphQL\Mutations;
+namespace Adventures\LaravelBokun\GraphQL;
 
+use Adventures\LaravelBokun\GraphQL\SerializesGraphQLInputList;
 use InvalidArgumentException;
 
-abstract class Mutation
+abstract class Query
 {
-    protected array $arguments;
+
+    protected array $arguments = [];
 
     public function __construct(
         public string $fields
@@ -41,15 +43,19 @@ abstract class Mutation
 
     public function __toString(): string
     {
+        $input = $this->serializeInputString($this->arguments);
+        return $this->getName() . ' ( ' . $input . ' ) { ' . $this->fields . ' }';
+    }
+
+    protected function serializeInputString(array $input): string
+    {
         $arguments = [];
-        foreach ($this->arguments as $name => $value) {
+        foreach ($input as $name => $value) {
             if (is_string($value)) {
                 $value = json_encode($value);
             }
             $arguments[] = $name . ': ' . (string) $value;
         }
-        $input = implode(',', $arguments);
-
-        return $this->getName() . ' ( ' . $input . ' ) { ' . $this->fields . ' }';
+        return implode(',', $arguments);
     }
 }
