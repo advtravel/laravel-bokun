@@ -208,7 +208,7 @@ abstract class DTO
         foreach ($self->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
             $name = $property->name;
             $type = $property->getType();
-            if (!$type instanceof ReflectionNamedType) {
+            if (! $type instanceof ReflectionNamedType) {
                 throw new RuntimeException("Property $name needs to have a type. Union types and intersection types are not supported.");
             }
 
