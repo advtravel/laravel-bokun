@@ -50,7 +50,9 @@ class Connection
         do {
             $result = $this->executeQuery($query);
             $hasNextPage = $result['pageInfo']['hasNextPage'];
-            $query->withArgument('after', $result['pageInfo']['endCursor']);
+            if ($hasNextPage) {
+                $query->withArgument('after', $result['pageInfo']['endCursor']);
+            }
 
             foreach ($result['edges'] as $edge) {
                 yield $edge['node'];
