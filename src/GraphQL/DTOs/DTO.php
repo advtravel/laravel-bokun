@@ -205,9 +205,9 @@ abstract class DTO
 
     /**
      * Limits the fields of this DTO to those that are actually used.
-     * 
+     *
      * If this function is called without arguments, it resets the state to "all fields".
-     * 
+     *
      * @param string ...$fields Fields that should be included in queries
      */
 

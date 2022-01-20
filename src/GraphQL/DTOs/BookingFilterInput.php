@@ -18,7 +18,7 @@ class BookingFilterInput extends DTO
             'cancelDateTo',
         ];
     }
-    
+
     public function __construct(
         public ?int $createdDateFrom = null,
         public ?int $createdDateTo = null,

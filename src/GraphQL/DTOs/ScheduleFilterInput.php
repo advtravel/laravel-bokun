@@ -12,7 +12,7 @@ class ScheduleFilterInput extends DTO
             'dateTimeTo',
         ];
     }
-    
+
     /**
      * @param array<int> $experienceIds
      */

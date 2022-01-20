@@ -55,7 +55,7 @@ class BokunController extends Controller
         return new BokunAppConfig(...);
     }
 
-    public function accessCodeRequest(Request $request): 
+    public function accessCodeRequest(Request $request):
     {
         $access_token_response =
             $this->handleAccessCodeRequest($request);
@@ -231,7 +231,7 @@ $backpack = Backpack::fromArray([
 ]);
 ```
 
-By using the `#[ArrayOf(OtherDTO::class)]` attribute, the DTO class can know into what sub-DTOs array items should be converted.
+By using the `#[ArrayOf(OtherDTO::class)]` attribute, the DTO class can know into what sub-DTOs array items should be converted. `ArrayOf` can also handle `string`, `int`, `float` and `bool`.
 
 #### Listing all fields
 
@@ -241,6 +241,14 @@ $this->makeRequest(Backpack::listFieldsForQuery(), $access_token);
 Result:
 ```php
 "name, items { name, weight_in_grams, color }, owner_id"
+```
+
+You can use `[DTO]::onlyUse(...$field)` to limit the fields you want to get from a DTO. For example, if your application doesn't need anything else from experiences than their ID & name, you can add the following line to your AppServiceProvider:
+
+```php
+use Adventures\LaravelBokun\GraphQL\DTOs\Experience;
+
+Experience::onlyUse('id', 'name');
 ```
 
 ## Changelog
