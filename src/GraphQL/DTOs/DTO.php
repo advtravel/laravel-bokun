@@ -13,7 +13,6 @@ use RuntimeException;
 
 abstract class DTO
 {
-
     private static array $onlyUseFields = [];
 
     /**
@@ -178,7 +177,7 @@ abstract class DTO
 
             if (
                 array_key_exists(static::class, self::$onlyUseFields)
-                && !in_array($name, self::$onlyUseFields[static::class])
+                && ! in_array($name, self::$onlyUseFields[static::class])
             ) {
                 continue;
             }
@@ -190,7 +189,7 @@ abstract class DTO
                     $name . ' { ' . $type::listFieldsForQuery() . ' }';
             } elseif (($type === 'array') || ($type === '?array')) {
                 $arrayOf = self::getArrayOfType($property);
-                if (!in_array($arrayOf, ['string', 'int', 'float', 'bool'])) {
+                if (! in_array($arrayOf, ['string', 'int', 'float', 'bool'])) {
                     $fields = $arrayOf::listFieldsForQuery();
                     $string_representation =
                         $name . ' { ' . $fields . ' }';
@@ -210,17 +209,17 @@ abstract class DTO
      *
      * @param string ...$fields Fields that should be included in queries
      */
-
-    public static function onlyUse(string ... $fields): void
+    public static function onlyUse(string ...$fields): void
     {
-        foreach($fields as $field) {
-            if (!property_exists(static::class, $field)) {
+        foreach ($fields as $field) {
+            if (! property_exists(static::class, $field)) {
                 throw new RuntimeException("Can't use $field on " . static::class . " since it's not a defined property.");
             }
         }
 
         if ((count($fields) > 0)) {
             self::$onlyUseFields[static::class] = $fields;
+
             return;
         }
 
@@ -228,7 +227,6 @@ abstract class DTO
             unset(self::$onlyUseFields[static::class]);
         }
     }
-
 
     /**
      * Constructs a DTO from an array. Properties that are DTOs again itself
@@ -267,11 +265,11 @@ abstract class DTO
                 $arrayOf = self::getArrayOfType($property);
                 $arguments[$name] = [];
                 foreach ($processed[$name] as $item) {
-                    $arguments[$name][] = match($arrayOf) {
+                    $arguments[$name][] = match ($arrayOf) {
                         'string' => (string) $item,
                         'int' => (int) $item,
                         'float' => (float) $item,
-                        'bool' => !!$item,
+                        'bool' => ! ! $item,
                         default => $arrayOf::fromArray($item)
                     };
                 }

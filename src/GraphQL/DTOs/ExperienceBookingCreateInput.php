@@ -44,7 +44,7 @@ class ExperienceBookingCreateInput extends DTO
         }
 
         if ($name === 'date') {
-            /** @var string $value  */
+            /** @var string $value */
             return ['dateTimestamp' => strtotime($value)];
         }
 

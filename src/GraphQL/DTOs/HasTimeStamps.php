@@ -4,7 +4,7 @@ namespace Adventures\LaravelBokun\GraphQL\DTOs;
 
 trait HasTimeStamps
 {
-    abstract static protected function getTimeStampColumnNames(): array;
+    abstract protected static function getTimeStampColumnNames(): array;
 
     protected function encodeSpecialFields(string $name, mixed $value): array
     {

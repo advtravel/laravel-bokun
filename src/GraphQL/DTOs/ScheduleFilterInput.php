@@ -5,6 +5,7 @@ namespace Adventures\LaravelBokun\GraphQL\DTOs;
 class ScheduleFilterInput extends DTO
 {
     use HasTimeStamps;
+
     protected static function getTimeStampColumnNames(): array
     {
         return [

@@ -7,11 +7,12 @@ use Adventures\LaravelBokun\ArrayOf;
 class Booking extends DTO
 {
     use HasTimeStamps;
+
     protected static function getTimeStampColumnNames(): array
     {
         return [
             'lastModifiedDate',
-            'createdDate'
+            'createdDate',
         ];
     }
 

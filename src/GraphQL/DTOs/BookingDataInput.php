@@ -3,7 +3,6 @@
 namespace Adventures\LaravelBokun\GraphQL\DTOs;
 
 use Adventures\LaravelBokun\ArrayOf;
-use Adventures\LaravelBokun\GraphQL\DTOs\ExperienceBookingDataInput;
 
 class BookingDataInput extends DTO
 {

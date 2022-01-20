@@ -7,6 +7,7 @@ use Adventures\LaravelBokun\ArrayOf;
 class BookingFilterInput extends DTO
 {
     use HasTimeStamps;
+
     protected static function getTimeStampColumnNames(): array
     {
         return [

@@ -5,6 +5,7 @@ namespace Adventures\LaravelBokun\GraphQL\DTOs;
 class ExperienceBooking extends DTO
 {
     use HasTimeStamps;
+
     protected static function getTimeStampColumnNames(): array
     {
         return [
