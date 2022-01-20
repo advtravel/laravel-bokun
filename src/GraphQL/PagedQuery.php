@@ -14,6 +14,14 @@ abstract class PagedQuery extends Query
         ];
     }
 
+    protected function oneWayPagedValidInputs(): array
+    {
+        return [
+            'after' => 'string',
+            'first' => 'integer',
+        ];
+    }
+
     public function __construct(
         string $fields
     ) {

@@ -8,10 +8,10 @@ class Experience extends DTO
 {
     public function __construct(
         public int $id,
-        public string $productCode,
-        public string $name,
-        public string $timeZone,
-        public Supplier $supplier,
+        public ?string $productCode = null,
+        public ?string $name = null,
+        public ?string $timeZone = null,
+        public ?Vendor $supplier = null,
         #[ArrayOf(ExperienceStartTime::class)]
         public ?array $startTimes = null
     ) {

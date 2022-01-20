@@ -44,7 +44,9 @@ abstract class Query
     {
         $input = $this->serializeInputString($this->arguments);
 
-        return $this->getName() . ' ( ' . $input . ' ) { ' . $this->fields . ' }';
+        return strlen(trim($input))
+            ? $this->getName() . ' ( ' . $input . ' ) { ' . $this->fields . ' }'
+            : $this->getName() . ' { ' . $this->fields . ' }';
     }
 
     protected function serializeInputString(array $input): string

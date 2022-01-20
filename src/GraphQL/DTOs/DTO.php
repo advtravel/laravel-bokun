@@ -13,6 +13,9 @@ use RuntimeException;
 
 abstract class DTO
 {
+
+    private static array $onlyUseFields = [];
+
     /**
      * Is a given property name an id that needs to be B64 encoded to Bókun?
      *
@@ -169,8 +172,17 @@ abstract class DTO
     {
         $data = [];
         $self = new ReflectionClass(static::class);
+
         foreach ($self->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
             $name = $property->name;
+
+            if (
+                array_key_exists(static::class, self::$onlyUseFields)
+                && !in_array($name, self::$onlyUseFields[static::class])
+            ) {
+                continue;
+            }
+
             $type = (string) $property->getType();
             $string_representation = $name;
             if (is_subclass_of($type, self::class)) {
@@ -178,9 +190,11 @@ abstract class DTO
                     $name . ' { ' . $type::listFieldsForQuery() . ' }';
             } elseif (($type === 'array') || ($type === '?array')) {
                 $arrayOf = self::getArrayOfType($property);
-                $fields = $arrayOf::listFieldsForQuery();
-                $string_representation =
-                    $name . ' { ' . $fields . ' }';
+                if (!in_array($arrayOf, ['string', 'int', 'float', 'bool'])) {
+                    $fields = $arrayOf::listFieldsForQuery();
+                    $string_representation =
+                        $name . ' { ' . $fields . ' }';
+                }
             }
 
             $data[] = $string_representation;
@@ -190,10 +204,35 @@ abstract class DTO
     }
 
     /**
+     * Limits the fields of this DTO to those that are actually used.
+     * 
+     * If this function is called without arguments, it resets the state to "all fields".
+     * 
+     * @param string ...$fields Fields that should be included in queries
+     */
+
+    public static function onlyUse(string ... $fields): void
+    {
+        foreach($fields as $field) {
+            if (!property_exists(static::class, $field)) {
+                throw new RuntimeException("Can't use $field on " . static::class . " since it's not a defined property.");
+            }
+        }
+
+        if ((count($fields) > 0)) {
+            self::$onlyUseFields[static::class] = $fields;
+            return;
+        }
+
+        if (array_key_exists(static::class, self::$onlyUseFields)) {
+            unset(self::$onlyUseFields[static::class]);
+        }
+    }
+
+
+    /**
      * Constructs a DTO from an array. Properties that are DTOs again itself
      * are treated correctly, just like arrays of properties.
-     * Can't deal with arrays of scalars currently, haven't seen them in the
-     * Bókun API so far anyways.
      */
     public static function fromArray(array $data): static
     {
@@ -228,7 +267,13 @@ abstract class DTO
                 $arrayOf = self::getArrayOfType($property);
                 $arguments[$name] = [];
                 foreach ($processed[$name] as $item) {
-                    $arguments[$name][] = $arrayOf::fromArray($item);
+                    $arguments[$name][] = match($arrayOf) {
+                        'string' => (string) $item,
+                        'int' => (int) $item,
+                        'float' => (float) $item,
+                        'bool' => !!$item,
+                        default => $arrayOf::fromArray($item)
+                    };
                 }
             } else {
                 $arguments[$name] = $processed[$name];

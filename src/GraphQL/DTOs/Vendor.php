@@ -2,7 +2,7 @@
 
 namespace Adventures\LaravelBokun\GraphQL\DTOs;
 
-class Supplier extends DTO
+class Vendor extends DTO
 {
     public function __construct(
         public int $id,

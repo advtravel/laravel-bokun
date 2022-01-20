@@ -4,16 +4,21 @@ namespace Adventures\LaravelBokun\GraphQL\DTOs;
 
 class ScheduleFilterInput extends DTO
 {
-    public const DATETIME_FORMAT = 'Y-m-d\\TH:m:s';
-
+    use HasTimeStamps;
+    protected static function getTimeStampColumnNames(): array
+    {
+        return [
+            'dateTimeFrom',
+            'dateTimeTo',
+        ];
+    }
+    
     /**
-     * @param string $dateTimeFrom yyyy-MM-ddTHH:mm:ss
-     * @param string $dateTimeTo   yyyy-MM-ddTHH:mm:ss
      * @param array<int> $experienceIds
      */
     public function __construct(
-        public string $dateTimeFrom,
-        public string $dateTimeTo,
+        public int $dateTimeFrom,
+        public int $dateTimeTo,
         public array $experienceIds,
         public bool $bookedOnly = false
     ) {
