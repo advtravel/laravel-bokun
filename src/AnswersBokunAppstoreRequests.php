@@ -134,12 +134,21 @@ trait AnswersBokunAppstoreRequests
             abort(500, "Invalid access token response");
         }
 
+        $legacy_access_key = $legacy_secret_key = null;
+
+        if (array_key_exists('legacyApiCredentials', $response_data)) {
+            $legacy_access_key = $response_data['legacyApiCredentials']['accessKey'] ?? null;
+            $legacy_secret_key = $response_data['legacyApiCredentials']['secretKey'] ?? null;
+        }
+
         return new AccessTokenResponse(
             $response_data['access_token'],
             $response_data['appInstalledByUserFirstName'] . ' ' . $response_data['appInstalledByUserLastName'],
             $response_data['appInstalledByUserEmail'],
             BokunHelpers::parseID($response_data['vendor_id'])['Vendor'],
-            $domain
+            $domain,
+            $legacy_access_key,
+            $legacy_secret_key,
         );
     }
 }

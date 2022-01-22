@@ -183,11 +183,15 @@ abstract class DTO
             }
 
             $type = (string) $property->getType();
+            if (str_starts_with($type, '?')) {
+                $type = substr($type, 1);
+            }
+            
             $string_representation = $name;
             if (is_subclass_of($type, self::class)) {
                 $string_representation =
                     $name . ' { ' . $type::listFieldsForQuery() . ' }';
-            } elseif (($type === 'array') || ($type === '?array')) {
+            } elseif ($type === 'array') {
                 $arrayOf = self::getArrayOfType($property);
                 if (! in_array($arrayOf, ['string', 'int', 'float', 'bool'])) {
                     $fields = $arrayOf::listFieldsForQuery();

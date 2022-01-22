@@ -1,6 +1,6 @@
 # Laravel Bókun Appstore connector
 
-Adds support for the Bókun appstore and GraphQL API to a laravel installation.
+Adds support for the Bókun appstore and both GraphQL & Legacy API to a laravel installation.
 
 ## Installation
 
@@ -38,6 +38,8 @@ class MyClass {
     }
 }
 ```
+
+### Bókun Appstore connection
 
 Other use case: Connect via a controller to the Bókun AppStore:
 
@@ -96,7 +98,7 @@ Route::prefix('bokun')->name('bokun.')->group(function () {
 
 ```
 
-### Connections, queries & mutations
+### GraphQL: Connections, queries & mutations
 
 ```php
 use Adventures\LaravelBokun\BokunAppConfig;
@@ -154,6 +156,21 @@ $pagedQuery = new class extends PagedQuery {
 }
 $connection->executePagedQuery($pagedQuery);
 ```
+
+### Legacy REST API
+
+In order to connect to the Legacy REST API, you need to include the corresponding access scope in your application configuration. From that moment on, all users that already have the application installed will get again a promt asking them to confirm permissions (the same dialog that new installations get) and then on an accessCode request the `AccessTokenResponse` includes the legacy API access key & secret key for you to save. This key-pair can then be used to initiate a `RestApi` instance:
+
+```php
+use Adventures\LaravelBokun\Legacy;
+
+$client = new RestApi($access_key, $secret_key, $base_uri);
+
+$activity = $client->makeRequest('GET', '/activity.json/123');
+$response = $client->makeRequest('POST', '/foo.bar/123', $body_as_array);
+```
+
+The `$base_uri` has a default to the Bókun live environment, set to `https://api.bokuntest.com/` to connect to the test instance. The body data is passed as an array that will be JSON encoded on sending it to the API.
 
 ## DTOs
 
