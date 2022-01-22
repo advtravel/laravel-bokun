@@ -12,10 +12,9 @@ class RestApi
         private string $access_key,
         private string $secret_key,
         string $base_uri = 'https://api.bokuntest.com/',
-    )
-    {
+    ) {
         $this->client = new Client([
-            'base_uri' => $base_uri
+            'base_uri' => $base_uri,
         ]);
     }
 
@@ -40,7 +39,7 @@ class RestApi
         return [
             'X-Bokun-Date' => $date,
             'X-Bokun-AccessKey' => $this->access_key,
-            'X-Bokun-Signature' => $signature_base64
+            'X-Bokun-Signature' => $signature_base64,
         ];
     }
 
@@ -53,7 +52,7 @@ class RestApi
             'headers' => $this->generateHeaders($method, $path),
         ];
 
-        if (!is_null($body)) {
+        if (! is_null($body)) {
             $headers['Content-Type'] = 'application/json';
             $options['body'] = json_encode($body);
         }

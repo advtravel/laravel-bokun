@@ -186,7 +186,7 @@ abstract class DTO
             if (str_starts_with($type, '?')) {
                 $type = substr($type, 1);
             }
-            
+
             $string_representation = $name;
             if (is_subclass_of($type, self::class)) {
                 $string_representation =
