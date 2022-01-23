@@ -13,7 +13,7 @@ abstract class Query
     ) {
     }
 
-    final public function withArgument(string $name, mixed $value): self
+    final public function withArgument(string $name, mixed $value): static
     {
         if (! array_key_exists($name, $this->getValidInputs())) {
             throw new InvalidArgumentException("$name is no valid input argument for " . $this::class);
