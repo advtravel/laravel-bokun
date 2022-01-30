@@ -8,7 +8,7 @@ trait HasTimeStamps
 
     protected function encodeSpecialFields(string $name, mixed $value): array
     {
-        if (!is_null($value) && in_array($name, static::getTimeStampColumnNames())) {
+        if (! is_null($value) && in_array($name, static::getTimeStampColumnNames())) {
             return [$name => date('Y-m-d\TH:i:s', $value)];
         }
 
@@ -21,6 +21,7 @@ trait HasTimeStamps
             if (strpos($value, '[') !== false) {
                 $value = substr($value, 0, strpos($value, '['));
             }
+
             return [$name => strtotime($value)];
         }
 
