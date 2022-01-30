@@ -153,7 +153,8 @@ abstract class DTO
     {
         $attributes = $property->getAttributes(ArrayOf::class);
         if (count($attributes) !== 1) {
-            throw new RuntimeException("Can't serialize an array into fields without #[ArrayOf(abc::class)].");
+            $class = get_called_class();
+            throw new RuntimeException("Can't serialize an array ($class::{$property->name}) into fields without #[ArrayOf(abc::class)].");
         }
         $attribute = $attributes[0]->newInstance();
 

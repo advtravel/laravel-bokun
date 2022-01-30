@@ -12,8 +12,8 @@ class Connection
     use MakesBokunRequests;
 
     public function __construct(
-        private BokunAppConfig $app_config,
-        private string $access_token,
+        public readonly BokunAppConfig $app_config,
+        public readonly string $access_token,
     ) {
     }
 

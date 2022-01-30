@@ -2,6 +2,8 @@
 
 namespace Adventures\LaravelBokun\GraphQL\DTOs;
 
+use Adventures\LaravelBokun\ArrayOf;
+
 class ExperienceBooking extends DTO
 {
     use HasTimeStamps;
@@ -20,7 +22,10 @@ class ExperienceBooking extends DTO
         public int $zonedStartDateAndTime,
         public int $totalPassengerCount,
         public int $totalSeatsOccupied,
+        public ExperienceStartTime $startTime,
         public Experience $experience,
+        #[ArrayOf(PassengerBooking::class)]
+        public array $passengers,
     ) {
     }
 }
