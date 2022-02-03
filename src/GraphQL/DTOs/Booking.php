@@ -30,7 +30,7 @@ class Booking extends DTO
         public string $currency,
         public int $id,
         public string $status,
-        public Customer $customer,
+        public ?Customer $customer = null,
     ) {
     }
 }
