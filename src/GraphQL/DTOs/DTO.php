@@ -266,11 +266,14 @@ abstract class DTO
 
             $type = $type->getName();
             if (is_subclass_of($type, self::class)) {
-                $arguments[$name] = $type::fromArray($processed[$name]);
+                $arguments[$name] = is_null($processed[$name]) ? null : $type::fromArray($processed[$name]);
             } elseif (is_array($processed[$name])) {
                 $arrayOf = self::getArrayOfType($property);
                 $arguments[$name] = [];
                 foreach ($processed[$name] as $item) {
+                    if (is_null($item)) {
+                        continue;
+                    }
                     $arguments[$name][] = match ($arrayOf) {
                         'string' => (string) $item,
                         'int' => (int) $item,

@@ -34,7 +34,7 @@ trait MakesBokunRequests
                 if (
                     array_key_exists('extensions', $error) &&
                     array_key_exists('classification', $error['extensions']) &&
-                    ($error['extensions']['classification'] === 'DataFetchingError')
+                    ($error['extensions']['classification'] === 'DataFetchingException')
                 ) {
                     continue;
                 }
