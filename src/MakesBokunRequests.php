@@ -30,7 +30,7 @@ trait MakesBokunRequests
         if (isset($response['errors'])) {
             // Iterate through the errors and see whether there's one that we can skip
             $abort = false;
-            foreach($response['errors'] as $error) {
+            foreach ($response['errors'] as $error) {
                 if (
                     array_key_exists('extensions', $error) &&
                     array_key_exists('classification', $error['extensions']) &&
@@ -40,7 +40,7 @@ trait MakesBokunRequests
                 }
                 $abort = true;
             }
-            
+
             if ($abort) {
                 throw new RuntimeException("Bókun error message: " . ($response['errors'][0]['message'] ?? json_encode($response['errors'])));
             }
