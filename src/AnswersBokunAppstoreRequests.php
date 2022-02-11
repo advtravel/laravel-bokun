@@ -143,8 +143,8 @@ trait AnswersBokunAppstoreRequests
 
         return new AccessTokenResponse(
             $response_data['access_token'],
-            $response_data['appInstalledByUserFirstName'] . ' ' . $response_data['appInstalledByUserLastName'],
-            $response_data['appInstalledByUserEmail'],
+            trim($response_data(['appInstalledByUserFirstName'] ?? '') . ' ' . ($response_data['appInstalledByUserLastName'] ?? '')),
+            $response_data['appInstalledByUserEmail'] ?? '',
             BokunHelpers::parseID($response_data['vendor_id'])['Vendor'],
             $domain,
             $legacy_access_key,
