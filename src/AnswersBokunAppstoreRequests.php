@@ -114,7 +114,6 @@ trait AnswersBokunAppstoreRequests
 
     private function requestAccessToken(string $domain, string $code): AccessTokenResponse
     {
-        dd(42);
         $client = new Client();
 
         $bokunUrl =
