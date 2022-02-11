@@ -114,6 +114,7 @@ trait AnswersBokunAppstoreRequests
 
     private function requestAccessToken(string $domain, string $code): AccessTokenResponse
     {
+        dd(42);
         $client = new Client();
 
         $bokunUrl =
@@ -143,7 +144,7 @@ trait AnswersBokunAppstoreRequests
 
         return new AccessTokenResponse(
             $response_data['access_token'],
-            trim($response_data(['appInstalledByUserFirstName'] ?? '') . ' ' . ($response_data['appInstalledByUserLastName'] ?? '')),
+            trim(($response_data['appInstalledByUserFirstName'] ?? '') . ' ' . ($response_data['appInstalledByUserLastName'] ?? '')),
             $response_data['appInstalledByUserEmail'] ?? '',
             BokunHelpers::parseID($response_data['vendor_id'])['Vendor'],
             $domain,
