@@ -2,6 +2,11 @@
 
 All notable changes to `laravel-bokun` will be documented in this file.
 
+## 0.4.0 - 2022-03-09
+
+- Added DTOs for customerInvoice and all related elements
+- Added string backed Enums instead of strings where the Bókun API has a limited list of options
+
 ## 0.3.0 - 2022-01-22
 
 - Added functionality to query the REST API, fetch REST API token on appstore connect, and added wrapper for availabilitites REST API call

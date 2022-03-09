@@ -3,6 +3,7 @@
 namespace Adventures\LaravelBokun\GraphQL\DTOs;
 
 use Adventures\LaravelBokun\ArrayOf;
+use Adventures\LaravelBokun\GraphQL\Types\BookingStatus;
 
 class BookingFilterInput extends DTO
 {
@@ -28,7 +29,7 @@ class BookingFilterInput extends DTO
         public ?int $travelDateFrom = null,
         public ?int $travelDateTo = null,
         public ?int $supplierId = null,
-        #[ArrayOf('string')]
+        #[ArrayOf(BookingStatus::class)]
         public ?array $status = null,
         public ?string $searchTerm = null,
         public ?int $sellerId = null,

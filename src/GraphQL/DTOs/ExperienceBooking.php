@@ -3,6 +3,7 @@
 namespace Adventures\LaravelBokun\GraphQL\DTOs;
 
 use Adventures\LaravelBokun\ArrayOf;
+use Adventures\LaravelBokun\GraphQL\Types\BookingStatus;
 
 class ExperienceBooking extends DTO
 {
@@ -18,7 +19,7 @@ class ExperienceBooking extends DTO
     public function __construct(
         public int $id,
         public string $reference,
-        public string $bookingStatus,
+        public BookingStatus $bookingStatus,
         public int $zonedStartDateAndTime,
         public int $totalPassengerCount,
         public int $totalSeatsOccupied,

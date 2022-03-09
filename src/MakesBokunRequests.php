@@ -28,22 +28,7 @@ trait MakesBokunRequests
         /** @var array $response */
 
         if (isset($response['errors'])) {
-            // Iterate through the errors and see whether there's one that we can skip
-            $abort = false;
-            foreach ($response['errors'] as $error) {
-                if (
-                    array_key_exists('extensions', $error) &&
-                    array_key_exists('classification', $error['extensions']) &&
-                    ($error['extensions']['classification'] === 'DataFetchingException')
-                ) {
-                    continue;
-                }
-                $abort = true;
-            }
-
-            if ($abort) {
-                throw new RuntimeException("Bókun error message: " . ($response['errors'][0]['message'] ?? json_encode($response['errors'])));
-            }
+            throw new RuntimeException("Bókun error message: " . ($response['errors'][0]['message'] ?? json_encode($response['errors'])));
         }
         if (! isset($response['data'])) {
             throw new RuntimeException("No data in Bókun response");

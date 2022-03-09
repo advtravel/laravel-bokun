@@ -2,13 +2,12 @@
 
 namespace Adventures\LaravelBokun\GraphQL\DTOs;
 
+use Adventures\LaravelBokun\GraphQL\Types\BookingSortField;
+
 class BookingSortInput extends DTO
 {
-    /**
-     * @param string $bookingSortField either "CREATED_DATE" or "TRAVEL_DATE"
-     */
     public function __construct(
-        public ?string $bookingSortField = null,
+        public ?BookingSortField $bookingSortField = null,
         public bool $descending = false,
     ) {
     }

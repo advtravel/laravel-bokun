@@ -103,6 +103,14 @@ abstract class DTO
         foreach ($rothis->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
             $name = $property->name;
             $value = $property->getValue($this);
+            
+            $type = $property->getType();
+            if ($type instanceof ReflectionNamedType) {
+                if (enum_exists($type->getName())) {
+                    $value = $value?->value;
+                }
+            }
+
             $processed = $this->encodeSpecialFields($name, $value);
             $processed = array_filter($processed, fn ($v) => ! is_null($v));
             $data = $processed + $data;
@@ -266,14 +274,11 @@ abstract class DTO
 
             $type = $type->getName();
             if (is_subclass_of($type, self::class)) {
-                $arguments[$name] = is_null($processed[$name]) ? null : $type::fromArray($processed[$name]);
+                $arguments[$name] = $type::fromArray($processed[$name]);
             } elseif (is_array($processed[$name])) {
                 $arrayOf = self::getArrayOfType($property);
                 $arguments[$name] = [];
                 foreach ($processed[$name] as $item) {
-                    if (is_null($item)) {
-                        continue;
-                    }
                     $arguments[$name][] = match ($arrayOf) {
                         'string' => (string) $item,
                         'int' => (int) $item,
@@ -283,8 +288,13 @@ abstract class DTO
                     };
                 }
             } else {
-                $arguments[$name] = $processed[$name];
-                settype($arguments[$name], $type);
+                $typeRef = class_exists($type) ? new ReflectionClass($type) : null;
+                if ($typeRef?->isEnum()) {
+                    $arguments[$name] = $type::from($processed[$name]);
+                } else {
+                    $arguments[$name] = $processed[$name];
+                    settype($arguments[$name], $type);
+                }
             }
         }
 

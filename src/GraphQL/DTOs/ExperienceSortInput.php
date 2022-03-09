@@ -2,10 +2,12 @@
 
 namespace Adventures\LaravelBokun\GraphQL\DTOs;
 
+use Adventures\LaravelBokun\GraphQL\Types\ExperienceSortField;
+
 class ExperienceSortInput extends DTO
 {
     public function __construct(
-        public string $orderBy = '',
+        public ?ExperienceSortField $orderBy = null,
         public bool $descending = false,
     ) {
     }
