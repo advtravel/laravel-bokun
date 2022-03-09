@@ -103,7 +103,7 @@ abstract class DTO
         foreach ($rothis->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
             $name = $property->name;
             $value = $property->getValue($this);
-            
+
             $type = $property->getType();
             if ($type instanceof ReflectionNamedType) {
                 if (enum_exists($type->getName())) {
