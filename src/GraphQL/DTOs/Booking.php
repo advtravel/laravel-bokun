@@ -19,21 +19,21 @@ class Booking extends DTO
     }
 
     public function __construct(
-        public Vendor $seller,
-        public string $confirmationCode,
-        public int $lastModifiedDate,
-        public float $totalPaid,
-        public BookingRole $bookingRole,
-        public string $externalReference,
-        public int $createdDate,
-        public float $totalUnpaid,
-        #[ArrayOf(ExperienceBooking::class)]
-        public array $experienceBookings,
-        public string $currency,
         public int $id,
-        public BookingStatus $status,
-        public Customer $customer,
-        public CustomerInvoice $customerInvoice,
+        public ?Vendor $seller = null,
+        public ?string $confirmationCode = null,
+        public ?int $lastModifiedDate = null,
+        public ?float $totalPaid = null,
+        public ?BookingRole $bookingRole = null,
+        public ?string $externalReference = null,
+        public ?int $createdDate = null,
+        public ?float $totalUnpaid = null,
+        #[ArrayOf(ExperienceBooking::class)]
+        public ?array $experienceBookings = null,
+        public ?string $currency = null,
+        public ?BookingStatus $status = null,
+        public ?Customer $customer = null,
+        public ?CustomerInvoice $customerInvoice = null,
     ) {
     }
 }

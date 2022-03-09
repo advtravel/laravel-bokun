@@ -19,14 +19,14 @@ class ExperienceBooking extends DTO
     public function __construct(
         public int $id,
         public string $reference,
-        public BookingStatus $bookingStatus,
+        public Experience $experience,
         public int $zonedStartDateAndTime,
         public int $totalPassengerCount,
         public int $totalSeatsOccupied,
         public ExperienceStartTime $startTime,
-        public Experience $experience,
         #[ArrayOf(PassengerBooking::class)]
         public array $passengers,
+        public ?BookingStatus $bookingStatus = null,
     ) {
     }
 }

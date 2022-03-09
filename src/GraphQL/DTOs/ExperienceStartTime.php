@@ -8,8 +8,8 @@ class ExperienceStartTime extends DTO
 {
     public function __construct(
         public int $id,
-        public string $time,
-        public string $duration
+        public ?string $time = null,
+        public ?string $duration = null,
     ) {
     }
 

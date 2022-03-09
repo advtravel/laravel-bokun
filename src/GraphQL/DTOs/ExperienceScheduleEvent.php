@@ -7,9 +7,9 @@ use Adventures\LaravelBokun\GraphQL\Types\ExperienceAvailabilityStatus;
 class ExperienceScheduleEvent extends DTO
 {
     public function __construct(
-        public Experience $experience,
-        public int $seatsAvailable,
-        public ExperienceAvailabilityStatus $status,
+        public ?Experience $experience = null,
+        public ?int $seatsAvailable = null,
+        public ?ExperienceAvailabilityStatus $status = null,
     ) {
     }
 }

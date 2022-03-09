@@ -7,7 +7,7 @@ use Adventures\LaravelBokun\GraphQL\Types\ProductVendorRole;
 class ExperienceFilterInput extends DTO
 {
     public function __construct(
-        public int $supplierId,
+        public ?int $supplierId = null,
         public string $searchTerm = '',
         public ?string $lastModifiedAfter = null,
         public ?ProductVendorRole $vendorRole = null,
