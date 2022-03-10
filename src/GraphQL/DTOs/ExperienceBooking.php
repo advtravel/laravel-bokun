@@ -23,9 +23,9 @@ class ExperienceBooking extends DTO
         public int $zonedStartDateAndTime,
         public int $totalPassengerCount,
         public int $totalSeatsOccupied,
-        public ExperienceStartTime $startTime,
         #[ArrayOf(PassengerBooking::class)]
         public array $passengers,
+        public ?ExperienceStartTime $startTime = null,
         public ?BookingStatus $bookingStatus = null,
     ) {
     }
