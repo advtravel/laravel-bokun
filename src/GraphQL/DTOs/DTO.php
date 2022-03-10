@@ -274,7 +274,9 @@ abstract class DTO
 
             $type = $type->getName();
             if (is_subclass_of($type, self::class)) {
-                $arguments[$name] = $type::fromArray($processed[$name]);
+                $arguments[$name] = is_null($processed[$name])
+                    ? null
+                    : $type::fromArray($processed[$name]);
             } elseif (is_array($processed[$name])) {
                 $arrayOf = self::getArrayOfType($property);
                 $arguments[$name] = [];
@@ -290,7 +292,9 @@ abstract class DTO
             } else {
                 $typeRef = class_exists($type) ? new ReflectionClass($type) : null;
                 if ($typeRef?->isEnum()) {
-                    $arguments[$name] = $type::from($processed[$name]);
+                    $arguments[$name] = is_null($processed[$name])
+                        ? null
+                        : $type::from($processed[$name]);
                 } else {
                     $arguments[$name] = $processed[$name];
                     settype($arguments[$name], $type);

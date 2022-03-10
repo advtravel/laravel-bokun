@@ -17,4 +17,14 @@ class ExperienceQuestionAnswer extends DTO
         public ?string $questionCode = null,
     ) {
     }
+
+    protected function encodeSpecialFields(string $name, mixed $value): array
+    {
+        return [$name => $value];
+    }
+
+    protected static function decodeSpecialFields(string $name, mixed $value): array
+    {
+        return [$name => $value];
+    }
 }
