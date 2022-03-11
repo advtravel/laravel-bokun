@@ -12,4 +12,9 @@ class Customer extends DTO
         public ?string $phoneNumber = null,
     ) {
     }
+
+    public function getName(): string
+    {
+        return trim(($this->firstName ?? '') . ' ' . ($this->lastName ?? ''));
+    }
 }
