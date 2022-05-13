@@ -10,7 +10,7 @@ class Vendor extends DTO
         public string $domain,
         public string $bookingPrefix,
         public ?string $description = null,
-        public ?string $website = null,
+        public ?string $websiteUrl = null,
     ) {
     }
 }
