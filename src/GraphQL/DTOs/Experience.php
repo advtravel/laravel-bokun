@@ -13,7 +13,8 @@ class Experience extends DTO
         public ?string $timeZone = null,
         public ?Vendor $supplier = null,
         #[ArrayOf(ExperienceStartTime::class)]
-        public ?array $startTimes = null
+        public ?array $startTimes = null,
+        public ?int $boxedExperienceId = null,
     ) {
     }
 }
