@@ -75,6 +75,10 @@ abstract class DTO
             return [$name => $value];
         }
 
+        if (is_null($value)) {
+            return [$name => $value];
+        }
+
         if (is_string($value)) {
             $id = array_values(BokunHelpers::parseID($value))[0];
 
