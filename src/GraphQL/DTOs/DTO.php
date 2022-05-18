@@ -94,7 +94,7 @@ abstract class DTO
             return [$name => $ids];
         }
 
-        throw new RuntimeException("a field that's an ID has to be string or array in API return.");
+        throw new RuntimeException("a field that's an ID has to be string or array in API return. Actual value: " . json_encode($value) . " - Class: " . get_called_class());
     }
 
     /**
