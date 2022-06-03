@@ -22,7 +22,7 @@ class ExperienceBooking extends DTO
         public ?Experience $experience = null,
         #[ArrayOf(PassengerBooking::class)]
         public ?array $passengers = null,
-        #[ArrayOf(ExperienceBooking::class)]
+        #[ArrayOf(ExperienceBooking::class, ['childComboBookings'])]
         public ?array $childComboBookings = null,
         public ?int $totalPassengerCount = null,
         public ?int $totalSeatsOccupied = null,

@@ -161,7 +161,7 @@ abstract class DTO
      * For a property that has the #[ArrayOf] attribute, return the classname
      * that this is an array of.
      */
-    private static function getArrayOfType(ReflectionProperty $property): string
+    private static function getArrayOf(ReflectionProperty $property): ArrayOf
     {
         $attributes = $property->getAttributes(ArrayOf::class);
         if (count($attributes) !== 1) {
@@ -171,7 +171,7 @@ abstract class DTO
         }
         $attribute = $attributes[0]->newInstance();
 
-        return $attribute->getClassName();
+        return $attribute;
     }
 
     /**
@@ -181,13 +181,17 @@ abstract class DTO
      * constructed by this method can directly be used to construct the DTOs
      * for the results.
      */
-    public static function listFieldsForQuery(): string
+    public static function listFieldsForQuery(array $excludeKeys = []): string
     {
         $data = [];
         $self = new ReflectionClass(static::class);
 
         foreach ($self->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
             $name = $property->name;
+
+            if (in_array($name, $excludeKeys)) {
+                continue;
+            }
 
             if (
                 array_key_exists(static::class, self::$onlyUseFields)
@@ -206,9 +210,10 @@ abstract class DTO
                 $string_representation =
                     $name . ' { ' . $type::listFieldsForQuery() . ' }';
             } elseif ($type === 'array') {
-                $arrayOf = self::getArrayOfType($property);
-                if (! in_array($arrayOf, ['string', 'int', 'float', 'bool'])) {
-                    $fields = $arrayOf::listFieldsForQuery();
+                $arrayOf = self::getArrayOf($property);
+                $arrayOfType = $arrayOf->getClassName();
+                if (! in_array($arrayOfType, ['string', 'int', 'float', 'bool'])) {
+                    $fields = $arrayOfType::listFieldsForQuery($arrayOf->getExcludeKeys());
                     $string_representation =
                         $name . ' { ' . $fields . ' }';
                 }
@@ -282,7 +287,7 @@ abstract class DTO
                     ? null
                     : $type::fromArray($processed[$name]);
             } elseif (is_array($processed[$name])) {
-                $arrayOf = self::getArrayOfType($property);
+                $arrayOf = self::getArrayOf($property)->getClassName();
                 $arguments[$name] = [];
                 foreach ($processed[$name] as $item) {
                     $arguments[$name][] = match ($arrayOf) {
