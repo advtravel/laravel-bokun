@@ -15,7 +15,7 @@ class GetBookingByIdQuery extends Query
     public function getValidInputs(): array
     {
         return [
-            'id' => 'string'
+            'id' => 'string',
         ];
     }
 

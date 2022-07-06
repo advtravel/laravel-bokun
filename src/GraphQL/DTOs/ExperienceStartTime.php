@@ -18,7 +18,7 @@ class ExperienceStartTime extends DTO
         if (is_null($this->duration)) {
             return 0;
         }
-        
+
         $interval = new DateInterval($this->duration);
 
         return ($interval->d * 24 * 3600)
