@@ -14,6 +14,9 @@ class Experience extends DTO
         public ?Vendor $supplier = null,
         #[ArrayOf(ExperienceStartTime::class)]
         public ?array $startTimes = null,
+        #[ArrayOf(ExperienceRate::class)]
+        public ?array $rates = null,
+        public ?ExperienceRate $defaultRate = null,
         public ?int $boxedExperienceId = null,
     ) {
     }
