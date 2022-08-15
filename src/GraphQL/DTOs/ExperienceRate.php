@@ -1,6 +1,7 @@
 <?php
 
 namespace Adventures\LaravelBokun\GraphQL\DTOs;
+
 use Adventures\LaravelBokun\ArrayOf;
 
 class ExperienceRate extends DTO
