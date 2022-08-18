@@ -15,6 +15,8 @@ class OperatorDetails
     public ?int $vendor_id = null;
 
     public ?string $access_token = null;
+    public ?string $legacy_access_key = null;
+    public ?string $legacy_secret_key = null;
     public ?string $user_name = null;
     public ?string $user_email = null;
 
@@ -24,6 +26,8 @@ class OperatorDetails
         $this->user_email = $accessTokenResponse->app_installed_by_email;
         $this->access_token = $accessTokenResponse->access_token;
         $this->vendor_id = $accessTokenResponse->vendor_id;
+        $this->legacy_access_key = $accessTokenResponse->legacy_access_key;
+        $this->legacy_secret_key = $accessTokenResponse->legacy_secret_key;
     }
 
     protected function fieldMapping(): array
