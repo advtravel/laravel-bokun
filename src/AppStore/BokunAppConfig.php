@@ -1,6 +1,6 @@
 <?php
 
-namespace Adventures\LaravelBokun;
+namespace Adventures\LaravelBokun\AppStore;
 
 class BokunAppConfig
 {

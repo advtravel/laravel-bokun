@@ -1,7 +1,8 @@
 <?php
 
-namespace Adventures\LaravelBokun;
+namespace Adventures\LaravelBokun\GraphQL;
 
+use Adventures\LaravelBokun\AppStore\BokunAppConfig;
 use GuzzleHttp\Client;
 use RuntimeException;
 

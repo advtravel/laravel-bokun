@@ -1,10 +1,13 @@
 <?php
 
-namespace Adventures\LaravelBokun;
+namespace Adventures\LaravelBokun\AppStore;
 
 use Adventures\LaravelBokun\GraphQL\BokunHelpers;
+use Adventures\LaravelBokun\GraphQL\MakesBokunRequests;
 use GuzzleHttp\Client;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Throwable;
 
 trait AnswersBokunAppstoreRequests
@@ -13,36 +16,48 @@ trait AnswersBokunAppstoreRequests
 
     private static $nonce_session_key = 'bokun_appstore_nonce';
 
-    public function initialRequest(Request $request)
+    public function initialRequest(Request $request): RedirectResponse
     {
-        $config = $this->getAppConfig($request);
-
         abort_unless($this->hmacIsvalid($request->query()), 403, 'HMAC is invalid');
 
-        $nonce = mt_rand();
-        session([self::$nonce_session_key => $nonce]);
+        $domainFromRequest = $request->query('domain');
 
-        $redirect_url = $config->oauth_redirect_url;
-
-        // ngrok creates a https tunnel to a localhost http
-        // so when debugging we want to rewrite the http:// that's generated to https://
-        if (config('app.debug')) {
-            if (str_starts_with($redirect_url, 'http://') && str_contains($redirect_url, 'ngrok.io/')) {
-                $redirect_url = 'https://' . substr($redirect_url, 7);
-            }
+        try {
+            $operator = $this->getOperatorByDomain($domainFromRequest);
+        } catch (OperatorNotFoundException) {
+            return $this->redirectToAuthorizePage($domainFromRequest);
         }
 
-        $bokunUrl =
-            $this->bokunBaseURL($request->query('domain'))
-            . '/appstore/oauth/authorize?'
-            . http_build_query([
-                'client_id' => $this->getAppConfig()->app_id,
-                'scope' => config('bokun.scope'),
-                'redirect_uri' => $redirect_url,
-                'state' => $nonce,
-            ]);
+        if (! $operator->isFullyOAuthConnected()) {
+            return $this->redirectToAuthorizePage($domainFromRequest);
+        }
 
-        return redirect($bokunUrl);
+        $operatorDetails = $this->getOperatorDetails($operator->getAccessToken());
+
+        if ($operatorDetails->domain !== $domainFromRequest) {
+            return $this->redirectToAuthorizePage($domainFromRequest);
+        }
+
+        $operator->updateWithOperatorDetails($operatorDetails);
+
+        return $this->loginOperator($request, $operator);
+    }
+
+    public function accessCodeRequest(Request $request): RedirectResponse
+    {
+        $access_token_response = $this->handleAccessCodeRequest($request);
+
+        $details = $this->getOperatorDetails($access_token_response->access_token, $access_token_response);
+
+        try {
+            $operator = $this->getOperatorByVendorId($access_token_response->vendor_id);
+        } catch (OperatorNotFoundException) {
+            $operator = $this->createOperator($request, $details);
+        }
+
+        $operator->updateWithOperatorDetails($details);
+
+        return $this->loginOperator($request, $operator);
     }
 
     protected function handleAccessCodeRequest(Request $request): AccessTokenResponse
@@ -64,6 +79,70 @@ trait AnswersBokunAppstoreRequests
         abort_unless($bokunHeaders['x-bokun-topic'] === 'apps/uninstall', 501, 'This endpoint only handles apps/uninstall calls');
 
         return BokunHelpers::parseID($bokunHeaders['x-bokun-vendor-id'])['Vendor'];
+    }
+
+    private function redirectToAuthorizePage(string $domain): RedirectResponse
+    {
+        $config = $this->getAppConfig();
+
+        $nonce = mt_rand();
+        session([self::$nonce_session_key => $nonce]);
+
+        $redirect_url = $config->oauth_redirect_url;
+
+        // ngrok creates a https tunnel to a localhost http
+        // so when debugging we want to rewrite the http:// that's generated to https://
+        if (config('app.debug')) {
+            if (str_starts_with($redirect_url, 'http://') && str_contains($redirect_url, 'ngrok.io/')) {
+                $redirect_url = 'https://' . substr($redirect_url, 7);
+            }
+        }
+
+        $bokunUrl =
+            $this->bokunBaseURL($domain)
+            . '/appstore/oauth/authorize?'
+            . http_build_query([
+                'client_id' => $this->getAppConfig()->app_id,
+                'scope' => config('bokun.scope'),
+                'redirect_uri' => $redirect_url,
+                'state' => $nonce,
+            ]);
+
+        return redirect($bokunUrl);
+    }
+
+    abstract protected function loginOperator(Request $request, BokunAppStoreOperator $operator): RedirectResponse;
+
+    abstract protected function createOperator(Request $request, OperatorDetails $details): BokunAppStoreOperator;
+
+    abstract protected function getOperatorByDomain(string $domain): BokunAppStoreOperator;
+
+    abstract protected function getOperatorByVendorID(int $vendor_id): BokunAppStoreOperator;
+
+    protected function getQueryFields(): string
+    {
+        return <<<FIELDS
+            contact {emailAddress}
+            name
+            domain
+        FIELDS;
+    }
+
+    private function getOperatorDetails(string $access_token, ?AccessTokenResponse $access_token_response = null): OperatorDetails
+    {
+        $details = App::make(OperatorDetails::class);
+
+        $fields = $this->getQueryFields();
+
+        $vendor = $this->makeRequest("query vendor { vendor { $fields }}", $access_token)['vendor'];
+
+        $details->fillFromVendorData($vendor);
+
+        if (! is_null($access_token_response)) {
+            $details->fillFromAccessTokenReponse($access_token_response);
+        }
+
+        return $details;
     }
 
     /**

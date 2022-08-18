@@ -2,8 +2,7 @@
 
 namespace Adventures\LaravelBokun\GraphQL;
 
-use Adventures\LaravelBokun\BokunAppConfig;
-use Adventures\LaravelBokun\MakesBokunRequests;
+use Adventures\LaravelBokun\AppStore\BokunAppConfig;
 use Iterator;
 use RuntimeException;
 
