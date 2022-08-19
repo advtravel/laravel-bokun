@@ -3,6 +3,7 @@
 namespace Adventures\LaravelBokun\AppStore;
 
 use Illuminate\Support\Arr;
+use ReflectionProperty;
 use RuntimeException;
 
 class OperatorDetails
@@ -43,7 +44,10 @@ class OperatorDetails
     {
         foreach ($this->fieldMapping() as $field => $array_key) {
             if (! Arr::has($vendor, $array_key)) {
-                throw new RuntimeException("Key $array_key for $field not found in " . json_encode($vendor) . " with field mapping " . json_encode($this->fieldMapping()));
+                $prop = new ReflectionProperty($this, $field);
+                if (! $prop->getType()?->allowsNull()) {
+                    throw new RuntimeException("Key $array_key for $field not found in " . json_encode($vendor) . " with field mapping " . json_encode($this->fieldMapping()));
+                }
             }
 
             $this->{$field} = Arr::get($vendor, $array_key);
