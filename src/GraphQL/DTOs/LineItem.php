@@ -11,7 +11,7 @@ class LineItem extends DTO
         public int $id,
         public float $unitPrice,
         public int $quantity,
-        public ?TicketCategory $ticketCategory = null,
+        // public ?TicketCategory $ticketCategory = null,
         public ?string $name = null,
         public ?ProductLineItemType $type = null,
     ) {
