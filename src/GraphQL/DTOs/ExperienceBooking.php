@@ -13,12 +13,14 @@ class ExperienceBooking extends DTO
     {
         return [
             'zonedStartDateAndTime',
+            'startDateAndTime',
         ];
     }
 
     public function __construct(
         public int $id,
         public ?int $zonedStartDateAndTime = null,
+        public ?int $startDateAndTime = null,
         public ?Experience $experience = null,
         #[ArrayOf(PassengerBooking::class)]
         public ?array $passengers = null,
