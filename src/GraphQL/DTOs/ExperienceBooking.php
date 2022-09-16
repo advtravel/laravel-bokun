@@ -4,6 +4,7 @@ namespace Adventures\LaravelBokun\GraphQL\DTOs;
 
 use Adventures\LaravelBokun\ArrayOf;
 use Adventures\LaravelBokun\GraphQL\Types\BookingStatus;
+use Carbon\Carbon;
 
 class ExperienceBooking extends DTO
 {
@@ -32,5 +33,10 @@ class ExperienceBooking extends DTO
         public ?ExperienceStartTime $startTime = null,
         public ?BookingStatus $bookingStatus = null,
     ) {
+    }
+
+    public function startCarbon(): Carbon
+    {
+        return Carbon::createFromTimestampUTC($this->startDateAndTime);
     }
 }
