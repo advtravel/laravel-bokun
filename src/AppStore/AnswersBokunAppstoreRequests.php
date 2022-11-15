@@ -32,7 +32,11 @@ trait AnswersBokunAppstoreRequests
             return $this->redirectToAuthorizePage($domainFromRequest);
         }
 
-        $operatorDetails = $this->getOperatorDetails($operator->getAccessToken());
+        try {
+            $operatorDetails = $this->getOperatorDetails($operator->getAccessToken());
+        } catch (Throwable) {
+            return $this->redirectToAuthorizePage($domainFromRequest);
+        }
 
         if ($operatorDetails->domain !== $domainFromRequest) {
             return $this->redirectToAuthorizePage($domainFromRequest);
