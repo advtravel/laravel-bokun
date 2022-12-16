@@ -107,7 +107,7 @@ trait AnswersBokunAppstoreRequests
             . '/appstore/oauth/authorize?'
             . http_build_query([
                 'client_id' => $this->getAppConfig()->app_id,
-                'scope' => config('bokun.scope'),
+                'scope' => $config->scope,
                 'redirect_uri' => $redirect_url,
                 'state' => $nonce,
             ]);
