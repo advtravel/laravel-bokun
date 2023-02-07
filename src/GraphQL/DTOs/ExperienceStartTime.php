@@ -10,16 +10,17 @@ class ExperienceStartTime extends DTO
         public int $id,
         public ?string $time = null,
         public ?string $duration = null,
+        public ?string $isoDuration = null,
     ) {
     }
 
     public function getDurationInSeconds(): int
     {
-        if (is_null($this->duration)) {
+        if (is_null($this->isoDuration)) {
             return 0;
         }
 
-        $interval = new DateInterval($this->duration);
+        $interval = new DateInterval($this->isoDuration);
 
         return ($interval->d * 24 * 3600)
              + ($interval->h * 3600)
