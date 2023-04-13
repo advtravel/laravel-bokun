@@ -15,6 +15,7 @@ class ExperienceBooking extends DTO
         return [
             'zonedStartDateAndTime',
             'startDateAndTime',
+            'pickupDateAndTime',
         ];
     }
 
@@ -32,6 +33,13 @@ class ExperienceBooking extends DTO
         public ?string $reference = null,
         public ?ExperienceStartTime $startTime = null,
         public ?BookingStatus $bookingStatus = null,
+        public ?string $customPickupPlace = null,
+        public ?PickupPlace $dropoffPlace = null,
+        public ?bool $pickup = null,
+        public ?int $pickupDateAndTime,
+        public ?PickupPlace $pickupPlace = null,
+        #[ArrayOf(ExperienceQuestionAnswer::class)]
+        public ?array $pickupQuestions = null,
     ) {
     }
 

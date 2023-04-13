@@ -18,6 +18,14 @@ class Experience extends DTO
         public ?array $rates = null,
         public ?ExperienceRate $defaultRate = null,
         public ?int $boxedExperienceId = null,
+        #[ArrayOf(PickupPlace::class)]
+        public ?array $pickupPlaces = null,
+        public ?bool $pickupAllowsCustomLocation = null,
+        public ?bool $pickupCapacityLimited = null,
+        public ?int $pickupMinutesBefore = null,
+        public ?bool $pickupService = null,
+        public ?bool $pickupTimeIsLocationBased = null,
+        public ?int $pickupTimeWindowInMinutes = null,
     ) {
     }
 }
