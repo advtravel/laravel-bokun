@@ -10,7 +10,7 @@ class Location extends DTO
         public int $id,
         public ?Address $address = null,
         public ?string $name = null,
-        public ?LocationType $locationType = null,
+        public ?LocationType $type = null,
     ) {
     }
 }
