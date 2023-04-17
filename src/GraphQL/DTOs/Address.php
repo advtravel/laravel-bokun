@@ -4,7 +4,7 @@ namespace Adventures\LaravelBokun\GraphQL\DTOs;
 
 use Adventures\LaravelBokun\GraphQL\Types\LocationOrigin;
 
-class Address
+class Address extends DTO
 {
     public function __construct(
         public int $id,
