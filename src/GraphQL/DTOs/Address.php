@@ -14,7 +14,7 @@ class Address extends DTO
         public ?string $city = null,
         public ?string $countryCode = null,
         public ?GeoPoint $geoPoint = null,
-        public ?LocationOrigin $locationOrigin = null,
+        public ?LocationOrigin $origin = null,
         public ?string $originId = null,
         public ?string $postalCode = null,
         public ?string $state = null,
