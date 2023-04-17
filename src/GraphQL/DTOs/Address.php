@@ -6,6 +6,24 @@ use Adventures\LaravelBokun\GraphQL\Types\LocationOrigin;
 
 class Address extends DTO
 {
+    protected static function decodeSpecialFields(string $name, mixed $value): array
+    {
+        if ($name === 'originId') {
+            return [$name => $value];
+        }
+
+        return parent::decodeSpecialFields($name, $value);
+    }
+
+    protected function encodeSpecialFields(string $name, mixed $value): array
+    {
+        if ($name === 'originId') {
+            return [$name => $value];
+        }
+
+        return parent::encodeSpecialFields($name, $value);
+    }
+
     public function __construct(
         public int $id,
         public ?string $addressLine1 = null,
