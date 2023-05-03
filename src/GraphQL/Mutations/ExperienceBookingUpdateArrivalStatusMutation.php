@@ -7,15 +7,15 @@ use Adventures\LaravelBokun\GraphQL\Query;
 
 class ExperienceBookingUpdateArrivalStatusMutation extends Query
 {
-
-    public function getName(): string {
+    public function getName(): string
+    {
         return 'experienceBookingUpdateArrivalStatus';
     }
 
-    public function getValidInputs(): array {
+    public function getValidInputs(): array
+    {
         return [
-            'experienceBookingUpdateArrivalStatusInput' => ExperienceBookingUpdateArrivalStatusInput::class
+            'experienceBookingUpdateArrivalStatusInput' => ExperienceBookingUpdateArrivalStatusInput::class,
         ];
     }
-    
 }
