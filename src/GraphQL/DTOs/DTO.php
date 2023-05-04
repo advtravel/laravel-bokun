@@ -108,12 +108,12 @@ abstract class DTO
             $name = $property->name;
             $value = $property->getValue($this);
 
-            $type = $property->getType();
-            if ($type instanceof ReflectionNamedType) {
-                if (enum_exists($type->getName())) {
-                    $value = $value?->value;
-                }
-            }
+            // $type = $property->getType();
+            // if ($type instanceof ReflectionNamedType) {
+            //     if (enum_exists($type->getName())) {
+            //         $value = $value?->value;
+            //     }
+            // }
 
             $processed = $this->encodeSpecialFields($name, $value);
             $processed = array_filter($processed, fn ($v) => ! is_null($v));
@@ -145,7 +145,7 @@ abstract class DTO
             };
             $encode = function ($value) use (&$encodeArray) {
                 return match (gettype($value)) {
-                    "object" => (string) $value,
+                    "object" => enum_exists($value::class) ? $value->value : (string) $value,
                     "array" => $encodeArray($value),
                     "boolean" => $value ? 'true' : 'false',
                     default => json_encode($value)
