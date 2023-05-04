@@ -36,7 +36,7 @@ class ExperienceBooking extends DTO
         public ?string $customPickupPlace = null,
         public ?PickupPlace $dropoffPlace = null,
         public ?bool $pickup = null,
-        public ?int $pickupDateAndTime,
+        public ?int $pickupDateAndTime = null,
         public ?PickupPlace $pickupPlace = null,
         #[ArrayOf(ExperienceQuestionAnswer::class)]
         public ?array $pickupQuestions = null,
