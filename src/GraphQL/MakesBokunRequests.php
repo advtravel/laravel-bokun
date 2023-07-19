@@ -67,7 +67,7 @@ trait MakesBokunRequests
         return $return;
     }
 
-    private function hmacIsvalid(array $query, string $key = 'hmac'): bool
+    private function hmacIsValid(array $query, string $key = 'hmac'): bool
     {
         if (! array_key_exists($key, $query)) {
             return false;
