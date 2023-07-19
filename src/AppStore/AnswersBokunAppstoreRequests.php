@@ -149,26 +149,6 @@ trait AnswersBokunAppstoreRequests
         return $details;
     }
 
-    /**
-     * Like http_build_query but only accepts a flat input array as parameter
-     * And nothing is encoded. This is how Bókun builds the query for HMAC validation
-     */
-    private function buildQuery(array $query): string
-    {
-        if (! count($query)) {
-            return '';
-        }
-        $return = '';
-        foreach ($query as $key => $value) {
-            if ($return) {
-                $return .= '&';
-            }
-            $return .= $key . '=' . $value;
-        }
-
-        return $return;
-    }
-
     private function nonceIsValid(array $query): bool
     {
         if (! array_key_exists('state', $query)) {
@@ -176,23 +156,6 @@ trait AnswersBokunAppstoreRequests
         }
 
         return $query['state'] === (string) session(self::$nonce_session_key);
-    }
-
-    private function hmacIsvalid(array $query, string $key = 'hmac'): bool
-    {
-        if (! array_key_exists($key, $query)) {
-            return false;
-        }
-
-        $hmac = $query[$key];
-        unset($query[$key]);
-        ksort($query);
-
-        $query_to_verify = $this->buildQuery($query);
-
-        $hash = hash_hmac('sha256', $query_to_verify, $this->getAppConfig()->app_secret, false);
-
-        return $hash === $hmac;
     }
 
     private function requestAccessToken(string $domain, string $code): AccessTokenResponse
