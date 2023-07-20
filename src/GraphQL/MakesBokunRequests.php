@@ -96,7 +96,7 @@ trait MakesBokunRequests
             ARRAY_FILTER_USE_KEY
         );
 
-        $headers = array_map(fn(array $values) => reset($values), $headers);
+        $headers = array_map(fn (array $values) => reset($values), $headers);
 
         return $this->hmacIsValid($headers, $prefix . $hmacHeader);
     }
