@@ -83,4 +83,21 @@ trait MakesBokunRequests
 
         return $hash === $hmac;
     }
+
+    private function webhookHmacIsValid(array $headers, string $prefix = 'x-bokun-', string $hmacHeader = 'hmac'): bool
+    {
+        if (! array_key_exists($prefix . $hmacHeader, $headers)) {
+            return false;
+        }
+
+        $headers = array_filter(
+            $headers,
+            fn (string $key) => str_starts_with($key, $prefix),
+            ARRAY_FILTER_USE_KEY
+        );
+
+        $headers = array_map(fn(array $values) => reset($values), $headers);
+
+        return $this->hmacIsValid($headers, $prefix . $hmacHeader);
+    }
 }
