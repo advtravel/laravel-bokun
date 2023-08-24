@@ -27,10 +27,10 @@ class ExperienceBookingCreateInput extends DTO
 
         $fields = parent::encodeSpecialFields($name, $value);
 
-        if ($name === 'pickupPlaceId') {
+        if ($name === 'pickupPlaceId' && $value !== null) {
             $fields['pickup'] = true;
         }
-        if ($name === 'dropoffPlaceId') {
+        if ($name === 'dropoffPlaceId' && $value !== null) {
             $fields['dropoff'] = true;
         }
 
