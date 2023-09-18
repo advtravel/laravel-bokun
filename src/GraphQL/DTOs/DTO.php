@@ -13,6 +13,13 @@ use RuntimeException;
 
 abstract class DTO
 {
+    private array $raw = [];
+
+    public function setRaw(array $rawData)
+    {
+        $this->raw = $rawData;
+    }
+
     private static array $onlyUseFields = [];
 
     /**
@@ -314,6 +321,9 @@ abstract class DTO
         // https://phpstan.org/blog/solving-phpstan-error-unsafe-usage-of-new-static
         // We ignore the error since we know exactly what we're doing
         // @phpstan-ignore-next-line
-        return new static(...$arguments);
+        $dto = new static(...$arguments);
+        $dto->setRaw($data);
+
+        return $dto;
     }
 }

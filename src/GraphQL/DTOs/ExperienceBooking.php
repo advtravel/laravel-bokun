@@ -43,9 +43,13 @@ class ExperienceBooking extends DTO
     ) {
     }
 
-    public function startCarbon(): Carbon
+    public function startCarbon(): ?Carbon
     {
-        $carbon = Carbon::createFromTimestampUTC($this->startDateAndTime);
+        if ($this->zonedStartDateAndTime === null && $this->startDateAndTime === null) {
+            return null;
+        }
+
+        $carbon = Carbon::createFromTimestampUTC($this->zonedStartDateAndTime ?? $this->startDateAndTime);
 
         if ($this->experience?->timeZone !== null) {
             $carbon->setTimezone($this->experience->timeZone);
