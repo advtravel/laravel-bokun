@@ -40,6 +40,8 @@ class ExperienceBooking extends DTO
         public ?PickupPlace $pickupPlace = null,
         #[ArrayOf(ExperienceQuestionAnswer::class)]
         public ?array $pickupQuestions = null,
+        public ?string $bookedTitle = null,
+        public ?string $customizedStartTime = null,
     ) {
     }
 
