@@ -26,6 +26,7 @@ class Experience extends DTO
         public ?bool $pickupService = null,
         public ?bool $pickupTimeIsLocationBased = null,
         public ?int $pickupTimeWindowInMinutes = null,
+        public ?bool $privateExperience = null,
     ) {
     }
 }
