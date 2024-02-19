@@ -3,6 +3,7 @@
 namespace Adventures\LaravelBokun\GraphQL\DTOs;
 
 use Adventures\LaravelBokun\ArrayOf;
+use Adventures\LaravelBokun\GraphQL\Types\BookingPaymentStatus;
 use Adventures\LaravelBokun\GraphQL\Types\BookingRole;
 use Adventures\LaravelBokun\GraphQL\Types\BookingStatus;
 
@@ -34,6 +35,7 @@ class Booking extends DTO
         public ?BookingStatus $status = null,
         public ?Customer $customer = null,
         public ?CustomerInvoice $customerInvoice = null,
+        public ?BookingPaymentStatus $paymentStatus = null,
     ) {
     }
 }
