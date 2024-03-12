@@ -3,11 +3,13 @@
 namespace Adventures\LaravelBokun\Legacy;
 
 use Carbon\Carbon;
+use GuzzleHttp\Exception\ClientException;
 
 class Availabilities
 {
     public function __construct(
-        private RestApi $api
+        private RestApi $api,
+        private bool $ignore404activities = true,
     ) {
     }
 
@@ -28,10 +30,20 @@ class Availabilities
 
         $results = [];
         foreach ($experience_ids as $id) {
-            $results[$id] = $this->api->makeRequest(
-                'GET',
-                "/activity.json/{$id}/availabilities?" . $query
-            );
+            try {
+                $results[$id] = $this->api->makeRequest(
+                    'GET',
+                    "/activity.json/{$id}/availabilities?" . $query
+                );
+            } catch (ClientException $e) {
+                if (! $this->ignore404activities) {
+                    throw $e;
+                }
+
+                if ($e->getResponse()->getStatusCode() !== 404) {
+                    throw $e;
+                }
+            }
         }
 
         return $results;
